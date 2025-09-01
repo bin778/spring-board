@@ -1,0 +1,36 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 0.9em;
+}
+
+table th,
+table td {
+  padding: 7px 7px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+table th {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.info-summary {
+  text-align: right;
+  margin-bottom: 20px;
+  color: #495057;
+}
+
+.info-summary span {
+  margin-left: 15px;
+}
+
+.info-summary strong {
+  color: #007bff;
+}

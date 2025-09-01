@@ -1,0 +1,18 @@
+.info-container {
+  text-align: left;
+  margin: 30px 0;
+  padding: 20px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
