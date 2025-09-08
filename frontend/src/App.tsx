@@ -5,9 +5,11 @@ import InfoPage from './pages/InfoPage.tsx';
 import UpdatePage from './pages/UpdatePage.tsx';
 import DeletePage from './pages/DeletePage.tsx';
 import UserListPage from './pages/UserListPage.tsx';
+import WritePage from './pages/WritePage.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
-// TODO: 게시판 기능도 옮기기
-// TODO: 게시판 사진 및 동영상 업로드 기능 추가
+// TODO: 보안 요소 점검(XSS, Path Traversal)
+// TODO: 게시글 작성 중 멋대로 저장하는 문제 해결
+// TODO: 게시판 글 조회, 수정, 삭제 기능 추가
 
 function App() {
   return (
@@ -55,6 +57,15 @@ function App() {
         element={
           <ProtectedRoute adminOnly={true}>
             <UpdatePage />
+          </ProtectedRoute>
+        }
+      />
+      {/* [추가] 글쓰기 페이지 라우트. 로그인한 사용자만 접근 가능 */}
+      <Route
+        path="/write"
+        element={
+          <ProtectedRoute>
+            <WritePage />
           </ProtectedRoute>
         }
       />

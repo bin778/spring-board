@@ -133,3 +133,67 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+/* TipTap 에디터 스타일 */
+.tiptap-editor {
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.editor-menu {
+  display: flex;
+  gap: 5px;
+  padding: 10px;
+  border-bottom: 1px solid #ced4da;
+  background-color: #f8f9fa;
+}
+
+.editor-menu button {
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  background-color: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.editor-menu button:hover {
+  background-color: #e9ecef;
+}
+
+.editor-menu button.is-active {
+  background-color: #007bff;
+  color: white;
+}
+
+.ProseMirror {
+  padding: 15px;
+  min-height: 200px;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 글쓰기 폼 스타일 */
+.write-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: 700;
+}

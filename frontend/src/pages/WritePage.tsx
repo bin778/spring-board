@@ -1,0 +1,87 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import apiClient from '../services/api';
+import TiptapEditor from '../components/TiptapEditor'; // Tiptap 에디터 컴포넌트 임포트
+
+function WritePage() {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const navigate = useNavigate();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    let fileUrl = '';
+    // 1. 별도 첨부 파일이 있으면 먼저 업로드
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const response = await apiClient.post('/files/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        fileUrl = response.data;
+      } catch (error) {
+        console.error('파일 업로드 실패:', error);
+        alert('파일 업로드에 실패했습니다.');
+        return;
+      }
+    }
+
+    // 2. 게시글 데이터 전송
+    try {
+      await apiClient.post('/boards/write', {
+        title,
+        content,
+        fileUrl,
+      });
+      alert('게시글이 작성되었습니다.');
+      navigate('/'); // 성공 시 메인 페이지로 이동
+    } catch (error) {
+      console.error('게시글 작성 실패:', error);
+      alert('게시글 작성에 실패했습니다.');
+    }
+  };
+
+  return (
+    <div>
+      <h1>게시글 작성</h1>
+      <form onSubmit={handleSubmit} className="write-form">
+        <div className="form-group">
+          <label htmlFor="title">제목</label>
+          <input
+            type="text"
+            id="title"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            placeholder="제목을 입력하세요"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>내용</label>
+          <TiptapEditor onContentChange={setContent} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="file">파일 첨부</label>
+          <input type="file" id="file" onChange={handleFileChange} />
+        </div>
+        <div className="button-group">
+          <button type="submit">작성 완료</button>
+          <button type="button" onClick={() => navigate(-1)}>
+            취소
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+export default WritePage;
