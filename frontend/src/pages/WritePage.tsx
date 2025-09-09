@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
-import TiptapEditor from '../components/TiptapEditor'; // Tiptap 에디터 컴포넌트 임포트
+import TiptapEditor from '../components/TiptapEditor';
 
 function WritePage() {
   const [title, setTitle] = useState('');
@@ -19,7 +19,6 @@ function WritePage() {
     e.preventDefault();
 
     let fileUrl = '';
-    // 1. 별도 첨부 파일이 있으면 먼저 업로드
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
@@ -35,7 +34,6 @@ function WritePage() {
       }
     }
 
-    // 2. 게시글 데이터 전송
     try {
       await apiClient.post('/boards/write', {
         title,
@@ -43,7 +41,7 @@ function WritePage() {
         fileUrl,
       });
       alert('게시글이 작성되었습니다.');
-      navigate('/'); // 성공 시 메인 페이지로 이동
+      navigate('/');
     } catch (error) {
       console.error('게시글 작성 실패:', error);
       alert('게시글 작성에 실패했습니다.');

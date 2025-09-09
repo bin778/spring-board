@@ -8,7 +8,6 @@ import UserListPage from './pages/UserListPage.tsx';
 import WritePage from './pages/WritePage.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 // TODO: 보안 요소 점검(XSS, Path Traversal)
-// TODO: 게시글 작성 중 멋대로 저장하는 문제 해결
 // TODO: 게시판 글 조회, 수정, 삭제 기능 추가
 
 function App() {
@@ -17,7 +16,6 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/register" element={<RegisterPage />} />
 
-      {/* 로그인해야 접근 가능한 페이지들 */}
       <Route
         path="/info"
         element={
@@ -60,7 +58,6 @@ function App() {
           </ProtectedRoute>
         }
       />
-      {/* [추가] 글쓰기 페이지 라우트. 로그인한 사용자만 접근 가능 */}
       <Route
         path="/write"
         element={

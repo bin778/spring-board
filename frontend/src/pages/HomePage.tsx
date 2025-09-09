@@ -34,6 +34,7 @@ const HomePage = () => {
           <strong>{user.name}</strong>님, 환영합니다.
         </p>
         <button onClick={() => navigate('/info')}>내 정보</button>
+        <button onClick={() => navigate('/write')}>글 작성</button>
         {user.userType === 'admin' && <button onClick={() => navigate('/list')}>회원 목록</button>}
         <button onClick={handleLogout}>로그아웃</button>
       </div>
