@@ -2,7 +2,6 @@ package com.cyb.board.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -13,16 +12,8 @@ public class WebConfig implements WebMvcConfigurer {
     private String uploadDir;
 
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:5173")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowCredentials(true)
-                .maxAge(3600);
-    }
-
-    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // /files/** 경로로 오는 요청을 실제 파일 시스템의 uploadDir 경로와 매핑
         registry.addResourceHandler("/files/**")
                 .addResourceLocations("file:" + uploadDir);
     }

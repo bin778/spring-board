@@ -24,7 +24,7 @@ const RegisterPage = () => {
       return;
     }
     try {
-      await apiClient.post('/users/register', {
+      await apiClient.post('api/users/register', {
         id: formData.id,
         pwd: formData.pwd,
         name: formData.name,

@@ -35,7 +35,7 @@ public class FileController {
         }
 
         String extension = FilenameUtils.getExtension(originalFileName);
-        String savedFileName = UUID.randomUUID().toString() + "." + extension;
+        String savedFileName = UUID.randomUUID() + "." + extension;
 
         try {
             File uploadDirFile = new File(this.uploadDir);

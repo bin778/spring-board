@@ -3,8 +3,6 @@ import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import apiClient from '../services/api';
 import React from 'react';
-// TODO: 보안 요소 점검(XSS, Path Traversal)
-// TODO: 게시판 글 조회, 수정, 삭제 기능 추가
 
 // 메뉴바 컴포넌트
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
@@ -21,7 +19,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
     formData.append('file', file);
 
     try {
-      const response = await apiClient.post('/files/upload', formData, {
+      const response = await apiClient.post('/api/files/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

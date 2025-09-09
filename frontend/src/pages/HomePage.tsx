@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
 
-const HomePage = () => {
+function HomePage() {
   const { user, login, logout } = useAuth();
-  const navigate = useNavigate();
-
   const [id, setId] = useState('');
   const [pwd, setPwd] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const params = new URLSearchParams();
+    params.append('id', id);
+    params.append('pwd', pwd);
+
     try {
-      const response = await apiClient.post('/users/login', { id, pwd });
-      login(response.data);
+      await apiClient.post('/api/users/login', params);
+
+      const response = await apiClient.get('/api/users/me');
       alert(`${response.data.name}님, 환영합니다.`);
+      login(response.data);
+
+      navigate('/');
     } catch (error) {
-      console.error(error);
       alert('아이디 또는 비밀번호가 일치하지 않습니다.');
     }
   };
 
   const handleLogout = async () => {
-    await logout();
+    logout();
     alert('로그아웃 되었습니다.');
   };
 
@@ -35,7 +42,7 @@ const HomePage = () => {
         </p>
         <button onClick={() => navigate('/info')}>내 정보</button>
         <button onClick={() => navigate('/write')}>글 작성</button>
-        {user.userType === 'admin' && <button onClick={() => navigate('/list')}>회원 목록</button>}
+        {user.userType === 'admin' && <button onClick={() => navigate('/admin/list')}>회원 목록</button>}
         <button onClick={handleLogout}>로그아웃</button>
       </div>
     );
@@ -56,12 +63,20 @@ const HomePage = () => {
           />
         </div>
         <div>
-          <input type="submit" value="로그인" />
-          <Link to="/register">회원가입</Link>
+          <button type="submit">로그인</button>
+          <a
+            href="/register"
+            onClick={e => {
+              e.preventDefault();
+              navigate('/register');
+            }}
+          >
+            회원가입
+          </a>
         </div>
       </form>
     </div>
   );
-};
+}
 
 export default HomePage;

@@ -23,7 +23,7 @@ function WritePage() {
       const formData = new FormData();
       formData.append('file', file);
       try {
-        const response = await apiClient.post('/files/upload', formData, {
+        const response = await apiClient.post('/api/files/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         fileUrl = response.data;
@@ -35,7 +35,7 @@ function WritePage() {
     }
 
     try {
-      await apiClient.post('/boards/write', {
+      await apiClient.post('/api/boards/write', {
         title,
         content,
         fileUrl,

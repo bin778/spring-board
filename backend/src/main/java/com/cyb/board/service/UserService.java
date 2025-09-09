@@ -2,68 +2,66 @@ package com.cyb.board.service;
 
 import com.cyb.board.dto.UserDto;
 import com.cyb.board.mapper.UserMapper;
-import com.cyb.board.util.PasswordUtil;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     private final UserMapper userMapper;
-    private final HttpSession httpSession;
+    private final PasswordEncoder passwordEncoder;
 
     public void register(UserDto userDto) {
-        String hashedPassword = PasswordUtil.hash(userDto.getPwd());
-        userDto.setPwd(hashedPassword);
+        userDto.setPwd(passwordEncoder.encode(userDto.getPwd()));
         userMapper.insertUser(userDto);
     }
 
-    public UserDto login(String id, String rawPassword) {
-        UserDto user = userMapper.findById(id).orElse(null);
-        if (user == null) return null;
-
-        String hashedPassword = PasswordUtil.hash(rawPassword);
-        if (user.getPwd().equals(hashedPassword)) {
-            httpSession.setAttribute("loginUser", user);
-            return user;
-        }
-        return null;
+    public Optional<UserDto> getUserById(String id) {
+        return userMapper.findById(id);
     }
 
-    public UserDto getUserById(String id) {
-        return userMapper.findById(id).orElse(null);
+    public List<UserDto> selectAllUsers() {
+        return userMapper.selectAllUsers();
     }
 
-    public void updateUser(UserDto userDto) {
-        // 비밀번호가 비어있지 않은 경우에만 해싱하여 업데이트
-        if (userDto.getPwd() != null && !userDto.getPwd().trim().isEmpty()) {
-            userDto.setPwd(PasswordUtil.hash(userDto.getPwd()));
-        } else {
-            // 비밀번호가 비어있으면 기존 비밀번호를 사용
-            UserDto existingUser = userMapper.findById(userDto.getId()).orElseThrow();
-            userDto.setPwd(existingUser.getPwd());
-        }
-        userMapper.updateUser(userDto);
+    public int getTotalUserCount() {
+        return userMapper.getTotalUserCount();
+    }
+
+    public int getTodayRegisteredUserCount() {
+        return userMapper.getTodayRegisteredUserCount();
     }
 
     public void deleteUser(String id) {
         userMapper.deleteUser(id);
     }
 
-    public Map<String, Object> getUserListAndCounts() {
-        List<UserDto> userList = userMapper.selectAllUsers();
-        int totalCount = userMapper.getTotalUserCount();
-        int todayCount = userMapper.getTodayRegisteredUserCount();
+    public void updateUser(UserDto userDto) {
+        if (userDto.getPwd() != null && !userDto.getPwd().trim().isEmpty()) {
+            userDto.setPwd(passwordEncoder.encode(userDto.getPwd()));
+        } else {
+            userMapper.findById(userDto.getId())
+                    .ifPresent(existingUser -> userDto.setPwd(existingUser.getPwd()));
+        }
+        userMapper.updateUser(userDto);
+    }
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("userList", userList);
-        result.put("totalCount", totalCount);
-        result.put("todayCount", todayCount);
-        return result;
+    public Map<String, Object> getUserListAndCounts() {
+        List<UserDto> userList = selectAllUsers();
+        int totalCount = getTotalUserCount();
+        int todayCount = getTodayRegisteredUserCount();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("userList", userList);
+        response.put("totalCount", totalCount);
+        response.put("todayCount", todayCount);
+
+        return response;
     }
 }
