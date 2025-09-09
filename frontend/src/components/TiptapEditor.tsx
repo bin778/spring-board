@@ -3,6 +3,8 @@ import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import apiClient from '../services/api';
 import React from 'react';
+// TODO: 보안 요소 점검(XSS, Path Traversal)
+// TODO: 게시판 글 조회, 수정, 삭제 기능 추가
 
 // 메뉴바 컴포넌트
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
@@ -37,25 +39,30 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   return (
     <div className="editor-menu">
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleBold().run()}
         className={editor.isActive('bold') ? 'is-active' : ''}
       >
         Bold
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleItalic().run()}
         className={editor.isActive('italic') ? 'is-active' : ''}
       >
         Italic
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleStrike().run()}
         className={editor.isActive('strike') ? 'is-active' : ''}
       >
         Strike
       </button>
       <input type="file" id="imageUpload" onChange={addImage} style={{ display: 'none' }} accept="image/*" />
-      <button onClick={() => document.getElementById('imageUpload')?.click()}>Image</button>
+      <button type="button" onClick={() => document.getElementById('imageUpload')?.click()}>
+        Image
+      </button>
     </div>
   );
 };
@@ -63,10 +70,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
 // TipTap 에디터 컴포넌트
 const TiptapEditor = ({ onContentChange }: { onContentChange: (html: string) => void }) => {
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Image, // 이미지 확장 기능 추가
-    ],
+    extensions: [StarterKit, Image],
     content: '<p>내용을 입력하세요...</p>',
     onUpdate: ({ editor }) => {
       onContentChange(editor.getHTML());
