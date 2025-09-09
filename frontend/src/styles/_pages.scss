@@ -1,0 +1,57 @@
+@use 'variables' as v;
+
+.info-container {
+  text-align: left;
+  margin: 30px 0;
+  padding: 20px;
+  border: 1px solid lighten(v.$border-color, 5%);
+  border-radius: 8px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid lighten(v.$border-color, 10%);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 0.9em;
+
+  th,
+  td {
+    padding: 7px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
+
+  th {
+    background-color: #f2f2f2;
+    color: #333;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+}
+
+.info-summary {
+  text-align: right;
+  margin-bottom: 20px;
+  color: v.$text-secondary;
+
+  span {
+    margin-left: 15px;
+  }
+
+  strong {
+    color: v.$primary-color;
+  }
+}

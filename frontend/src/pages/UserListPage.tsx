@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
-import '../styles/list.css';
+import '../styles/_pages.scss';
 
 interface UserInfo {
   idx: number;

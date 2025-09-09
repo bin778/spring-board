@@ -1,6 +1,6 @@
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import '../styles/info.css';
+import '../styles/_pages.scss';
 
 const InfoPage = () => {
   const { user } = useAuth();

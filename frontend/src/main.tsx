@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './styles/index.css'; // 전역 CSS
+import './styles/main.scss';
 import AuthProvider from './contexts/AuthContext';
 import { BrowserRouter } from 'react-router-dom';
 
