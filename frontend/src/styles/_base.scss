@@ -13,7 +13,6 @@ body {
   padding: 20px;
   box-sizing: border-box;
 
-  // body 바로 아래의 첫 번째 div를 컨테이너로 사용
   > div {
     background-color: v.$bg-white;
     padding: 30px 40px;
