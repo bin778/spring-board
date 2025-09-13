@@ -20,6 +20,43 @@
   }
 }
 
+.detail-container {
+  width: 100%;
+  max-width: 800px;
+  text-align: left;
+
+  .info {
+    color: v.$text-secondary;
+    margin: 10px 0;
+    span + span {
+      margin-left: 15px;
+    }
+  }
+
+  .file-attachment {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: v.$bg-light;
+    border-radius: 4px;
+  }
+
+  .content {
+    margin-top: 20px;
+    line-height: 1.7;
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+  }
+
+  .button-group {
+    margin-top: 30px;
+    text-align: center;
+  }
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

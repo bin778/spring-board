@@ -6,9 +6,13 @@ import UpdatePage from './pages/UpdatePage';
 import DeletePage from './pages/DeletePage';
 import UserListPage from './pages/UserListPage';
 import WritePage from './pages/WritePage';
+import BoardListPage from './pages/BoardListPage';
+import BoardDetailPage from './pages/BoardDetailPage';
+import BoardUpdatePage from './pages/BoardUpdatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
-// TODO: 게시판 Read, Update, Delete 기능 추가
+// TODO: 수정할 때 파일을 지울 수 있도록 수정
+// TODO: 한글 초성만으로도 입력 가능하도록 수정
 // TODO: 관리자 계정은 삭제하지 못하도록 수정
 
 function App() {
@@ -64,11 +68,21 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/boards" element={<BoardListPage />} />
+          <Route path="/boards/:boardId" element={<BoardDetailPage />} />
           <Route
             path="/write"
             element={
               <ProtectedRoute>
                 <WritePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit/:boardId"
+            element={
+              <ProtectedRoute>
+                <BoardUpdatePage />
               </ProtectedRoute>
             }
           />
