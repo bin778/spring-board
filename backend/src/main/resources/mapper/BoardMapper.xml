@@ -33,10 +33,11 @@
 
     <update id="updateBoard" parameterType="com.cyb.board.dto.BoardDto">
         UPDATE board
-        SET
-            title = #{title},
-            description = #{content},
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">description = #{content},</if>
             file_url = #{fileUrl, jdbcType=VARCHAR}
+        </set>
         WHERE idx = #{idx}
     </update>
 

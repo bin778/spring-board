@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
 import TiptapEditor from '../components/TiptapEditor';
@@ -14,6 +14,7 @@ const BoardUpdatePage: React.FC = () => {
   const navigate = useNavigate();
   const [board, setBoard] = useState<BoardData | null>(null);
   const [newFile, setNewFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchBoard = async () => {
@@ -27,6 +28,19 @@ const BoardUpdatePage: React.FC = () => {
     };
     fetchBoard();
   }, [boardId, navigate]);
+
+  const handleRemoveExistingFile = () => {
+    if (window.confirm('기존 첨부파일을 삭제하시겠습니까?')) {
+      setBoard(currentBoard => (currentBoard ? { ...currentBoard, fileUrl: null } : null));
+    }
+  };
+
+  const handleClearNewFile = () => {
+    setNewFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,16 +94,31 @@ const BoardUpdatePage: React.FC = () => {
         <div className="form-group">
           <label>현재 첨부파일</label>
           {board.fileUrl ? (
-            <a href={board.fileUrl} target="_blank" rel="noreferrer">
-              {board.fileUrl.split('/').pop()}
-            </a>
+            <div>
+              <a href={board.fileUrl} target="_blank" rel="noreferrer">
+                {board.fileUrl.split('/').pop()}
+              </a>
+              <button type="button" onClick={handleRemoveExistingFile} className="btn-cancel-file">
+                삭제
+              </button>
+            </div>
           ) : (
             '없음'
           )}
         </div>
         <div className="form-group">
           <label htmlFor="file">새 파일 첨부</label>
-          <input type="file" id="file" onChange={e => e.target.files && setNewFile(e.target.files[0])} />
+          <input
+            type="file"
+            id="file"
+            ref={fileInputRef}
+            onChange={e => e.target.files && setNewFile(e.target.files[0])}
+          />
+          {newFile && (
+            <button type="button" onClick={handleClearNewFile} className="btn-cancel-file">
+              선택 취소
+            </button>
+          )}
         </div>
         <div className="button-group">
           <button type="submit">수정 완료</button>
