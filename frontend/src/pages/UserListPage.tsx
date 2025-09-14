@@ -24,7 +24,6 @@ const UserListPage = () => {
 
   const fetchUsers = async () => {
     try {
-      // [수정] 관리자 API 경로로 변경
       const response = await apiClient.get<UserListResponse>('/api/admin/users');
       setData(response.data);
     } catch (error) {
@@ -83,7 +82,7 @@ const UserListPage = () => {
               <td>{user.userType}</td>
               <td>{user.created.substring(0, 10)}</td>
               <td>
-                {user.id !== 'admin' && (
+                {user.userType !== 'admin' && (
                   <>
                     <button onClick={() => navigate(`/admin/update/${user.id}`)}>수정</button>
                     <button onClick={() => handleDelete(user.id, user.name)} style={{ backgroundColor: '#dc3545' }}>
