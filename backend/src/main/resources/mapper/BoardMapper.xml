@@ -10,9 +10,17 @@
     <select id="findWithPagingAndSearch" resultType="com.cyb.board.dto.BoardDto">
         SELECT idx, title, writer, created, last_updated AS lastUpdated, file_url AS fileUrl
         FROM board
-        <if test="search != null and search != ''">
-            WHERE title LIKE '%' || #{search} || '%' OR description LIKE '%' || #{search} || '%'
-        </if>
+        <where>
+            <if test="search != null and search != ''">
+                -- 원본 텍스트에서 검색 (한글, 영문, 숫자 등)
+                title LIKE '%' || #{search} || '%'
+                OR description LIKE '%' || #{search} || '%'
+                OR writer LIKE '%' || #{search} || '%'
+                -- 초성 변환 후 검색
+                OR F_GET_CHOSUNG(title) LIKE '%' || #{search} || '%'
+                OR F_GET_CHOSUNG(writer) LIKE '%' || #{search} || '%'
+            </if>
+        </where>
         ORDER BY idx DESC
         OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
     </select>
@@ -20,9 +28,15 @@
     <select id="count" resultType="int">
         SELECT COUNT(*)
         FROM board
-        <if test="search != null and search != ''">
-            WHERE title LIKE '%' || #{search} || '%' OR description LIKE '%' || #{search} || '%'
-        </if>
+        <where>
+            <if test="search != null and search != ''">
+                title LIKE '%' || #{search} || '%'
+                OR description LIKE '%' || #{search} || '%'
+                OR writer LIKE '%' || #{search} || '%'
+                OR F_GET_CHOSUNG(title) LIKE '%' || #{search} || '%'
+                OR F_GET_CHOSUNG(writer) LIKE '%' || #{search} || '%'
+            </if>
+        </where>
     </select>
 
     <select id="findById" parameterType="int" resultType="com.cyb.board.dto.BoardDto">
