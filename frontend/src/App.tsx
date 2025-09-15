@@ -5,13 +5,14 @@ import InfoPage from './pages/InfoPage';
 import UpdatePage from './pages/UpdatePage';
 import DeletePage from './pages/DeletePage';
 import UserListPage from './pages/UserListPage';
-import WritePage from './pages/WritePage';
+import BoardWritePage from './pages/BoardWritePage';
 import BoardListPage from './pages/BoardListPage';
 import BoardDetailPage from './pages/BoardDetailPage';
 import BoardUpdatePage from './pages/BoardUpdatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
 // TODO: 한글 초성만으로도 입력 가능하도록 수정
+// TODO: 게시글 목록 뒤로가기 수정
 
 function App() {
   const { isLoading } = useAuth();
@@ -72,7 +73,7 @@ function App() {
             path="/write"
             element={
               <ProtectedRoute>
-                <WritePage />
+                <BoardWritePage />
               </ProtectedRoute>
             }
           />
