@@ -91,8 +91,8 @@ const BoardListPage: React.FC = () => {
             {pageNumber + 1}
           </button>
         ))}
-        <button type="button" onClick={() => navigate(-1)}>
-          취소
+        <button type="button" onClick={() => navigate('/')}>
+          돌아가기
         </button>
       </div>
     </div>

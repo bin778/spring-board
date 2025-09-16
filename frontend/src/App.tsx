@@ -11,8 +11,9 @@ import BoardDetailPage from './pages/BoardDetailPage';
 import BoardUpdatePage from './pages/BoardUpdatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
-// TODO: 한글 초성만으로도 입력 가능하도록 수정
-// TODO: 게시글 목록 뒤로가기 수정
+// TODO: 한글 초성만으로도 입력 가능하도록 수정 (미완성)
+// TODO: 첨부파일 다운로드할 때 이미지나 동영상, PDF 성은 파일은 바로 다운로드 되도록 수정
+// TODO: 첨부파일을 업로드할 때 이름을 그대로 유지하도록 수정
 
 function App() {
   const { isLoading } = useAuth();
