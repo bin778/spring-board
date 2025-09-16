@@ -3,21 +3,34 @@ import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
 import TiptapEditor from '../components/TiptapEditor';
 
+interface FileInfo {
+  fileUrl: string;
+  originalFileName: string;
+}
+
 function WritePage() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const [attachedFile, setAttachedFile] = useState<FileInfo | null>(null);
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const response = await apiClient.post<FileInfo>('/api/files/upload', formData);
+      setAttachedFile(response.data);
+    } catch (error) {
+      alert('파일 업로드에 실패했습니다.');
     }
   };
 
   const handleClearFile = () => {
-    setFile(null);
+    setAttachedFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -25,33 +38,16 @@ function WritePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    let fileUrl = '';
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-      try {
-        const response = await apiClient.post('/api/files/upload', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        fileUrl = response.data;
-      } catch (error) {
-        console.error('파일 업로드 실패:', error);
-        alert('파일 업로드에 실패했습니다.');
-        return;
-      }
-    }
-
     try {
       await apiClient.post('/api/boards/write', {
         title,
         content,
-        fileUrl,
+        fileUrl: attachedFile?.fileUrl,
+        originalFileName: attachedFile?.originalFileName,
       });
       alert('게시글이 작성되었습니다.');
-      navigate('/');
+      navigate('/boards');
     } catch (error) {
-      console.error('게시글 작성 실패:', error);
       alert('게시글 작성에 실패했습니다.');
     }
   };
@@ -71,7 +67,7 @@ function WritePage() {
             placeholder="제목을 입력하세요"
             required
           />
-          {file && (
+          {attachedFile && (
             <button type="button" onClick={handleClearFile} className="btn-cancel-file">
               선택 취소
             </button>

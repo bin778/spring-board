@@ -9,6 +9,7 @@ interface Board {
   content: string;
   writer: string;
   fileUrl: string | null;
+  originalFileName: string | null;
   created: string;
 }
 
@@ -24,6 +25,7 @@ const BoardDetailPage: React.FC = () => {
         const response = await apiClient.get<Board>(`/api/boards/${boardId}`);
         setBoard(response.data);
       } catch (error) {
+        console.error('게시글을 불러오는데 실패했습니다.', error);
         alert('존재하지 않는 게시글입니다.');
         navigate('/boards');
       }
@@ -43,9 +45,13 @@ const BoardDetailPage: React.FC = () => {
     }
   };
 
-  if (!board) return <div>로딩 중...</div>;
+  if (!board) {
+    return <div>로딩 중...</div>;
+  }
 
-  const createMarkup = (htmlContent: string) => ({ __html: htmlContent });
+  const createMarkup = (htmlContent: string) => {
+    return { __html: htmlContent };
+  };
 
   return (
     <div className="detail-container">
@@ -55,10 +61,14 @@ const BoardDetailPage: React.FC = () => {
         <span>작성일: {new Date(board.created).toLocaleString()}</span>
       </div>
       <hr />
-      {board.fileUrl && (
+      {board.fileUrl && board.originalFileName && (
         <div className="file-attachment">
-          <a href={board.fileUrl} target="_blank" rel="noopener noreferrer">
-            첨부파일 다운로드
+          <a
+            href={`http://localhost:8080/api/files/download/${board.fileUrl}?originalFileName=${encodeURIComponent(
+              board.originalFileName,
+            )}`}
+          >
+            {board.originalFileName}
           </a>
         </div>
       )}

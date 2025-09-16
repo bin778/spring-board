@@ -4,28 +4,39 @@ import Image from '@tiptap/extension-image';
 import apiClient from '../services/api';
 import React, { useEffect } from 'react';
 
+interface FileUploadResponse {
+  fileUrl: string;
+  originalFileName: string;
+}
+
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
   if (!editor) {
     return null;
   }
+
   const addImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
     const formData = new FormData();
     formData.append('file', file);
+
     try {
-      const response = await apiClient.post('/api/files/upload', formData, {
+      const response = await apiClient.post<FileUploadResponse>('/api/files/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      const url = response.data;
-      if (url) {
-        editor.chain().focus().setImage({ src: url }).run();
+
+      const savedFileName = response.data.fileUrl;
+      if (savedFileName) {
+        const imageUrl = `http://localhost:8080/files/${savedFileName}`;
+        editor.chain().focus().setImage({ src: imageUrl }).run();
       }
     } catch (error) {
       console.error('이미지 업로드 실패:', error);
       alert('이미지 업로드에 실패했습니다.');
     }
   };
+
   return (
     <div className="editor-menu">
       <button

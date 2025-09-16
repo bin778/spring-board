@@ -9,6 +9,7 @@ public class BoardDto {
     private String content;
     private String writer;
     private String fileUrl;
+    private String originalFileName;
     private String created;
     private String lastUpdated;
 }

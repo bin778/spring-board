@@ -3,20 +3,18 @@
 <mapper namespace="com.cyb.board.mapper.BoardMapper">
 
     <insert id="insertBoard" parameterType="com.cyb.board.dto.BoardDto">
-        INSERT INTO board (title, description, writer, file_url)
-        VALUES (#{title}, #{content}, #{writer}, #{fileUrl, jdbcType=VARCHAR})
+        INSERT INTO board (title, description, writer, file_url, original_file_name)
+        VALUES (#{title}, #{content}, #{writer}, #{fileUrl, jdbcType=VARCHAR}, #{originalFileName, jdbcType=VARCHAR})
     </insert>
 
     <select id="findWithPagingAndSearch" resultType="com.cyb.board.dto.BoardDto">
         SELECT idx, title, writer, created, last_updated AS lastUpdated, file_url AS fileUrl
         FROM board
         <where>
-            <if test="search != null and search != ''">
-                -- 원본 텍스트에서 검색 (한글, 영문, 숫자 등)
+            <if test="search != null and search.trim() != ''">
                 title LIKE '%' || #{search} || '%'
                 OR description LIKE '%' || #{search} || '%'
                 OR writer LIKE '%' || #{search} || '%'
-                -- 초성 변환 후 검색
                 OR F_GET_CHOSUNG(title) LIKE '%' || #{search} || '%'
                 OR F_GET_CHOSUNG(writer) LIKE '%' || #{search} || '%'
             </if>
@@ -29,7 +27,7 @@
         SELECT COUNT(*)
         FROM board
         <where>
-            <if test="search != null and search != ''">
+            <if test="search != null and search.trim() != ''">
                 title LIKE '%' || #{search} || '%'
                 OR description LIKE '%' || #{search} || '%'
                 OR writer LIKE '%' || #{search} || '%'
@@ -40,7 +38,15 @@
     </select>
 
     <select id="findById" parameterType="int" resultType="com.cyb.board.dto.BoardDto">
-        SELECT idx, title, description AS content, writer, created, last_updated AS lastUpdated, file_url AS fileUrl
+        SELECT
+            idx,
+            title,
+            description AS content,
+            writer,
+            created,
+            last_updated AS lastUpdated,
+            file_url AS fileUrl,
+            original_file_name AS originalFileName
         FROM board
         WHERE idx = #{id}
     </select>
@@ -50,7 +56,8 @@
         <set>
             <if test="title != null">title = #{title},</if>
             <if test="content != null">description = #{content},</if>
-            file_url = #{fileUrl, jdbcType=VARCHAR}
+            file_url = #{fileUrl, jdbcType=VARCHAR},
+            original_file_name = #{originalFileName, jdbcType=VARCHAR}
         </set>
         WHERE idx = #{idx}
     </update>

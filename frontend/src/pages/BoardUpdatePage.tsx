@@ -6,14 +6,20 @@ import TiptapEditor from '../components/TiptapEditor';
 interface BoardData {
   title: string;
   content: string;
-  fileUrl?: string | null;
+  fileUrl: string | null;
+  originalFileName: string | null;
+}
+
+interface FileInfo {
+  fileUrl: string;
+  originalFileName: string;
 }
 
 const BoardUpdatePage: React.FC = () => {
   const { boardId } = useParams<{ boardId: string }>();
   const navigate = useNavigate();
   const [board, setBoard] = useState<BoardData | null>(null);
-  const [newFile, setNewFile] = useState<File | null>(null);
+  const [newFileInfo, setNewFileInfo] = useState<FileInfo | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -22,21 +28,40 @@ const BoardUpdatePage: React.FC = () => {
         const response = await apiClient.get<BoardData>(`/api/boards/${boardId}`);
         setBoard(response.data);
       } catch (error) {
-        alert('게시글 정보를 불러오는데 실패했습니다.');
+        alert('게시글 정보를 불러오는 데 실패했습니다.');
         navigate('/boards');
       }
     };
     fetchBoard();
   }, [boardId, navigate]);
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setNewFileInfo(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const response = await apiClient.post<FileInfo>('/api/files/upload', formData);
+      setNewFileInfo(response.data);
+      setBoard(currentBoard => (currentBoard ? { ...currentBoard, fileUrl: null, originalFileName: null } : null));
+    } catch (error) {
+      alert('파일 업로드에 실패했습니다.');
+    }
+  };
+
   const handleRemoveExistingFile = () => {
     if (window.confirm('기존 첨부파일을 삭제하시겠습니까?')) {
-      setBoard(currentBoard => (currentBoard ? { ...currentBoard, fileUrl: null } : null));
+      setBoard(currentBoard => (currentBoard ? { ...currentBoard, fileUrl: null, originalFileName: null } : null));
     }
   };
 
   const handleClearNewFile = () => {
-    setNewFile(null);
+    setNewFileInfo(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -46,25 +71,17 @@ const BoardUpdatePage: React.FC = () => {
     e.preventDefault();
     if (!board) return;
 
-    let fileUrl = board.fileUrl;
-    if (newFile) {
-      const formData = new FormData();
-      formData.append('file', newFile);
-      try {
-        const res = await apiClient.post('/api/files/upload', formData);
-        fileUrl = res.data;
-      } catch {
-        alert('파일 업로드 실패');
-        return;
-      }
-    }
-
     try {
-      await apiClient.put(`/api/boards/${boardId}`, { ...board, fileUrl });
+      await apiClient.put(`/api/boards/${boardId}`, {
+        title: board.title,
+        content: board.content,
+        fileUrl: newFileInfo?.fileUrl || board.fileUrl,
+        originalFileName: newFileInfo?.originalFileName || board.originalFileName,
+      });
       alert('게시글이 수정되었습니다.');
       navigate(`/boards/${boardId}`);
-    } catch {
-      alert('게시글 수정 실패. 권한을 확인해주세요.');
+    } catch (error) {
+      alert('게시글 수정에 실패했습니다. 권한을 확인해주세요.');
     }
   };
 
@@ -93,11 +110,9 @@ const BoardUpdatePage: React.FC = () => {
         </div>
         <div className="form-group">
           <label>현재 첨부파일</label>
-          {board.fileUrl ? (
+          {board.originalFileName ? (
             <div>
-              <a href={board.fileUrl} target="_blank" rel="noreferrer">
-                {board.fileUrl.split('/').pop()}
-              </a>
+              <span>{board.originalFileName}</span>
               <button type="button" onClick={handleRemoveExistingFile} className="btn-cancel-file">
                 삭제
               </button>
@@ -108,16 +123,14 @@ const BoardUpdatePage: React.FC = () => {
         </div>
         <div className="form-group">
           <label htmlFor="file">새 파일 첨부</label>
-          <input
-            type="file"
-            id="file"
-            ref={fileInputRef}
-            onChange={e => e.target.files && setNewFile(e.target.files[0])}
-          />
-          {newFile && (
-            <button type="button" onClick={handleClearNewFile} className="btn-cancel-file">
-              선택 취소
-            </button>
+          <input type="file" id="file" ref={fileInputRef} onChange={handleFileChange} />
+          {newFileInfo && (
+            <div>
+              <span>{newFileInfo.originalFileName}</span>
+              <button type="button" onClick={handleClearNewFile} className="btn-cancel-file">
+                선택 취소
+              </button>
+            </div>
           )}
         </div>
         <div className="button-group">
