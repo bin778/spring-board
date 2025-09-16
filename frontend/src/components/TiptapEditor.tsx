@@ -3,6 +3,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import apiClient from '../services/api';
 import React, { useEffect } from 'react';
+import axios from 'axios';
 
 interface FileUploadResponse {
   fileUrl: string;
@@ -32,8 +33,15 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         editor.chain().focus().setImage({ src: imageUrl }).run();
       }
     } catch (error) {
-      console.error('이미지 업로드 실패:', error);
-      alert('이미지 업로드에 실패했습니다.');
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 413) {
+          alert('이미지 크기가 너무 커서 업로드할 수 없습니다.');
+        } else {
+          alert('이미지 업로드에 실패했습니다.');
+        }
+      } else {
+        alert('알 수 없는 오류가 발생했습니다.');
+      }
     }
   };
 

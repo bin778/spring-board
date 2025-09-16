@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
 import TiptapEditor from '../components/TiptapEditor';
+import axios from 'axios';
 
 interface FileInfo {
   fileUrl: string;
@@ -25,7 +26,15 @@ function WritePage() {
       const response = await apiClient.post<FileInfo>('/api/files/upload', formData);
       setAttachedFile(response.data);
     } catch (error) {
-      alert('파일 업로드에 실패했습니다.');
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 413) {
+          alert('파일 크기가 너무 커서 업로드할 수 없습니다.');
+        } else {
+          alert('파일 업로드에 실패했습니다.');
+        }
+      } else {
+        alert('알 수 없는 오류가 발생했습니다.');
+      }
     }
   };
 

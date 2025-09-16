@@ -11,10 +11,13 @@ import BoardDetailPage from './pages/BoardDetailPage';
 import BoardUpdatePage from './pages/BoardUpdatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
-// TODO: 한글 초성만으로도 입력 가능하도록 수정 (미완성)
+// 메인 퀘스트
+// TODO: 한글 초성만으로도 입력 가능하는 기능 추가(미완성)
 // TODO: 게시판 기능을 AJAX 방식으로 수정
-// TODO: 좀 더 큰 파일도 업로드 할 수 있도록 수정
 // TODO: <src>, <img>, <p> 등 스크립트 코드가 검색되는 문제 수정
+
+// 보조 퀘스트
+// TODO: 비밀번호 검사 기능 추가(8자리 이상, 대소문자, 특수문자 섞기)
 
 function App() {
   const { isLoading } = useAuth();
