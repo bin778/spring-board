@@ -15,4 +15,6 @@ public interface BoardMapper {
     Optional<BoardDto> findById(int id);
     void updateBoard(BoardDto board);
     void deleteBoard(int id);
+    List<BoardDto> findWithChosungSearch(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("search") String search);
+    int countWithChosungSearch(@Param("search") String search);
 }

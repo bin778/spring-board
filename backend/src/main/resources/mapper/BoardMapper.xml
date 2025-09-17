@@ -15,8 +15,6 @@
                 title LIKE '%' || #{search} || '%'
                 OR description LIKE '%' || #{search} || '%'
                 OR writer LIKE '%' || #{search} || '%'
-                OR F_GET_CHOSUNG(title) LIKE '%' || #{search} || '%'
-                OR F_GET_CHOSUNG(writer) LIKE '%' || #{search} || '%'
             </if>
         </where>
         ORDER BY idx DESC
@@ -24,15 +22,12 @@
     </select>
 
     <select id="count" resultType="int">
-        SELECT COUNT(*)
-        FROM board
+        SELECT COUNT(*) FROM board
         <where>
             <if test="search != null and search.trim() != ''">
                 title LIKE '%' || #{search} || '%'
                 OR description LIKE '%' || #{search} || '%'
                 OR writer LIKE '%' || #{search} || '%'
-                OR F_GET_CHOSUNG(title) LIKE '%' || #{search} || '%'
-                OR F_GET_CHOSUNG(writer) LIKE '%' || #{search} || '%'
             </if>
         </where>
     </select>
@@ -66,4 +61,26 @@
         DELETE FROM board WHERE idx = #{id}
     </delete>
 
+    <select id="findWithChosungSearch" resultType="com.cyb.board.dto.BoardDto">
+        SELECT idx, title, writer, created, last_updated AS lastUpdated, file_url AS fileUrl, original_file_name as originalFileName
+        FROM board
+        <where>
+            <if test="search != null and search.trim() != ''">
+                REGEXP_LIKE(F_GET_CHOSUNG(title), #{search})
+                OR REGEXP_LIKE(F_GET_CHOSUNG(writer), #{search})
+            </if>
+        </where>
+        ORDER BY idx DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+    </select>
+
+    <select id="countWithChosungSearch" resultType="int">
+        SELECT COUNT(*) FROM board
+        <where>
+            <if test="search != null and search.trim() != ''">
+                REGEXP_LIKE(F_GET_CHOSUNG(title), #{search})
+                OR REGEXP_LIKE(F_GET_CHOSUNG(writer), #{search})
+            </if>
+        </where>
+    </select>
 </mapper>
