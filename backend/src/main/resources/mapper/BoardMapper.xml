@@ -8,12 +8,12 @@
     </insert>
 
     <select id="findWithPagingAndSearch" resultType="com.cyb.board.dto.BoardDto">
-        SELECT idx, title, writer, created, last_updated AS lastUpdated, file_url AS fileUrl
+        SELECT idx, title, writer, created, last_updated AS lastUpdated, file_url AS fileUrl, original_file_name as originalFileName
         FROM board
         <where>
             <if test="search != null and search.trim() != ''">
                 title LIKE '%' || #{search} || '%'
-                OR description LIKE '%' || #{search} || '%'
+                OR F_STRIP_TAGS(description) LIKE '%' || #{search} || '%'
                 OR writer LIKE '%' || #{search} || '%'
             </if>
         </where>
@@ -26,7 +26,7 @@
         <where>
             <if test="search != null and search.trim() != ''">
                 title LIKE '%' || #{search} || '%'
-                OR description LIKE '%' || #{search} || '%'
+                OR F_STRIP_TAGS(description) LIKE '%' || #{search} || '%'
                 OR writer LIKE '%' || #{search} || '%'
             </if>
         </where>

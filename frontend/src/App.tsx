@@ -11,13 +11,8 @@ import BoardDetailPage from './pages/BoardDetailPage';
 import BoardUpdatePage from './pages/BoardUpdatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
-// 메인 퀘스트
-// TODO: 한글 초성만으로도 입력 가능하는 기능 추가(미완성)
-// TODO: 게시판 기능을 AJAX 방식으로 수정
-// TODO: <src>, <img>, <p> 등 스크립트 코드가 검색되는 문제 수정
-
-// 보조 퀘스트
 // TODO: 비밀번호 검사 기능 추가(8자리 이상, 대소문자, 특수문자 섞기)
+// TODO: 관리자 권한 강화(IP 추적, 다른 사용자의 게시물 수정 및 삭제)
 
 function App() {
   const { isLoading } = useAuth();
