@@ -128,3 +128,22 @@ input[type='submit'] {
     }
   }
 }
+
+.password-validation {
+  text-align: left;
+  font-size: 0.85rem;
+  margin: -10px 0 15px 5px;
+
+  p {
+    margin: 4px 0;
+    transition: color 0.2s;
+  }
+
+  .valid {
+    color: #28a745;
+  }
+
+  .invalid {
+    color: #dc3545;
+  }
+}

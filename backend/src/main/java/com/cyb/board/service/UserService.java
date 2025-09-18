@@ -7,11 +7,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +18,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EncryptionService encryptionService;
 
+    private static final String PASSWORD_PATTERN =
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$";
+
     public void register(UserDto userDto) {
+        if (isValidPassword(userDto.getPwd())) {
+            throw new IllegalArgumentException("비밀번호는 최소 8자리 이상이며, 대소문자와 특수문자를 모두 포함해야 합니다.");
+        }
         userDto.setPwd(passwordEncoder.encode(userDto.getPwd()));
         encryptUserFields(userDto);
         userMapper.insertUser(userDto);
@@ -49,7 +53,10 @@ public class UserService {
     }
 
     public void updateUser(UserDto userDto) {
-        if (userDto.getPwd() != null && !userDto.getPwd().trim().isEmpty()) {
+        if (StringUtils.hasText(userDto.getPwd())) {
+            if (isValidPassword(userDto.getPwd())) {
+                throw new IllegalArgumentException("비밀번호는 최소 8자리 이상이며, 대소문자와 특수문자를 모두 포함해야 합니다.");
+            }
             userDto.setPwd(passwordEncoder.encode(userDto.getPwd()));
         } else {
             userMapper.findById(userDto.getId())
@@ -57,6 +64,11 @@ public class UserService {
         }
         encryptUserFields(userDto);
         userMapper.updateUser(userDto);
+    }
+
+    private boolean isValidPassword(String password) {
+        if (password == null) return true;
+        return !Pattern.matches(PASSWORD_PATTERN, password);
     }
 
     private void encryptUserFields(UserDto user) {

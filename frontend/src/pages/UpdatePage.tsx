@@ -11,31 +11,49 @@ interface UserData {
   address: string;
 }
 
-function UpdatePage() {
+const validatePassword = (password: string) => {
+  const hasMinLength = password.length >= 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+  return { hasMinLength, hasUpperCase, hasLowerCase, hasSpecialChar };
+};
+
+const UpdatePage = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const { userId } = useParams<{ userId: string }>();
   const isAdminUpdate = !!userId;
 
   const [formData, setFormData] = useState<UserData>({ id: '', name: '', phone: '', address: '' });
+  const [validity, setValidity] = useState({
+    hasMinLength: true,
+    hasUpperCase: true,
+    hasLowerCase: true,
+    hasSpecialChar: true,
+  });
+
+  useEffect(() => {
+    if (formData.pwd) {
+      setValidity(validatePassword(formData.pwd));
+    } else {
+      setValidity({ hasMinLength: true, hasUpperCase: true, hasLowerCase: true, hasSpecialChar: true });
+    }
+  }, [formData.pwd]);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        let response;
-        if (isAdminUpdate) {
-          response = await apiClient.get(`/api/admin/users/${userId}`);
-        } else {
-          response = await apiClient.get('/api/users/me');
-        }
+        const response = isAdminUpdate
+          ? await apiClient.get<UserData>(`/api/admin/users/${userId}`)
+          : await apiClient.get<UserData>('/api/users/me');
         setFormData({ ...response.data, pwd: '' });
       } catch (error) {
         alert('사용자 정보를 불러오는 데 실패했습니다.');
-        navigate(isAdminUpdate ? '/admin/list' : '/');
       }
     };
     fetchUserData();
-  }, [userId, isAdminUpdate, navigate]);
+  }, [userId, isAdminUpdate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,18 +61,18 @@ function UpdatePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (formData.pwd && !Object.values(validity).every(Boolean)) {
+      alert('새 비밀번호가 모든 조건을 만족하는지 확인해주세요.');
+      return;
+    }
+
     try {
       const updateUrl = isAdminUpdate ? `/api/admin/users/update` : `/api/users/update`;
-
-      const payload = { ...formData };
-      if (!payload.pwd) {
-        delete payload.pwd;
-      }
-
-      await apiClient.put(updateUrl, payload);
+      await apiClient.put(updateUrl, formData);
 
       if (isAdminUpdate) {
-        alert(`${formData.name}님의 정보가 성공적으로 수정되었습니다.`);
+        alert(`${formData.name}님의 정보가 수정되었습니다.`);
         navigate('/admin/list');
       } else {
         alert('정보가 수정되었습니다. 다시 로그인해주세요.');
@@ -62,8 +80,12 @@ function UpdatePage() {
         logout();
         navigate('/');
       }
-    } catch (error) {
-      alert('정보 수정에 실패했습니다.');
+    } catch (error: any) {
+      if (error.response && error.response.status === 400) {
+        alert(error.response.data);
+      } else {
+        alert('정보 수정에 실패했습니다.');
+      }
     }
   };
 
@@ -79,6 +101,14 @@ function UpdatePage() {
           value={formData.pwd || ''}
           onChange={handleChange}
         />
+        {formData.pwd && (
+          <div className="password-validation">
+            <p className={validity.hasMinLength ? 'valid' : 'invalid'}>✓ 8자리 이상</p>
+            <p className={validity.hasLowerCase ? 'valid' : 'invalid'}>✓ 소문자 포함</p>
+            <p className={validity.hasUpperCase ? 'valid' : 'invalid'}>✓ 대문자 포함</p>
+            <p className={validity.hasSpecialChar ? 'valid' : 'invalid'}>✓ 특수문자 포함</p>
+          </div>
+        )}
         <input type="text" name="name" required value={formData.name} onChange={handleChange} />
         <input type="text" name="phone" value={formData.phone} onChange={handleChange} />
         <input type="text" name="address" value={formData.address} onChange={handleChange} />
@@ -89,6 +119,6 @@ function UpdatePage() {
       </form>
     </div>
   );
-}
+};
 
 export default UpdatePage;

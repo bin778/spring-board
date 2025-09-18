@@ -11,7 +11,6 @@ import BoardDetailPage from './pages/BoardDetailPage';
 import BoardUpdatePage from './pages/BoardUpdatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
-// TODO: 비밀번호 검사 기능 추가(8자리 이상, 대소문자, 특수문자 섞기)
 // TODO: 관리자 권한 강화(IP 추적, 다른 사용자의 게시물 수정 및 삭제)
 
 function App() {
