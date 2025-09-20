@@ -36,12 +36,10 @@ public class BoardService {
 
         if (search != null && CHOSUNG_PATTERN.matcher(search).matches()) {
             // 검색어가 초성으로만 이루어진 경우
-            System.out.println("초성 검색 실행: " + search); // 로그 확인
             boards = boardMapper.findWithChosungSearch(offset, pageSize, search);
             total = boardMapper.countWithChosungSearch(search);
         } else {
             // 그 외의 경우 (완성형 한글, 영어, 숫자, null 등)
-            System.out.println("일반 검색 실행: " + search); // 로그 확인
             boards = boardMapper.findWithPagingAndSearch(offset, pageSize, search);
             total = boardMapper.count(search);
         }

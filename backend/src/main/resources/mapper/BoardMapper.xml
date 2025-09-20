@@ -3,8 +3,8 @@
 <mapper namespace="com.cyb.board.mapper.BoardMapper">
 
     <insert id="insertBoard" parameterType="com.cyb.board.dto.BoardDto">
-        INSERT INTO board (title, description, writer, file_url, original_file_name)
-        VALUES (#{title}, #{content}, #{writer}, #{fileUrl, jdbcType=VARCHAR}, #{originalFileName, jdbcType=VARCHAR})
+        INSERT INTO board (title, description, writer, file_url, original_file_name, ip_address)
+        VALUES (#{title}, #{content}, #{writer}, #{fileUrl, jdbcType=VARCHAR}, #{originalFileName, jdbcType=VARCHAR}, #{ipAddress})
     </insert>
 
     <select id="findWithPagingAndSearch" resultType="com.cyb.board.dto.BoardDto">
@@ -34,14 +34,9 @@
 
     <select id="findById" parameterType="int" resultType="com.cyb.board.dto.BoardDto">
         SELECT
-            idx,
-            title,
-            description AS content,
-            writer,
-            created,
-            last_updated AS lastUpdated,
-            file_url AS fileUrl,
-            original_file_name AS originalFileName
+            idx, title, description AS content, writer, created,
+            last_updated AS lastUpdated, file_url AS fileUrl,
+            original_file_name AS originalFileName, ip_address AS ipAddress
         FROM board
         WHERE idx = #{id}
     </select>

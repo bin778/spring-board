@@ -12,4 +12,5 @@ public class BoardDto {
     private String originalFileName;
     private String created;
     private String lastUpdated;
+    private String ipAddress;
 }

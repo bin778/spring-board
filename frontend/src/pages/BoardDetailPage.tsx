@@ -11,6 +11,7 @@ interface Board {
   fileUrl: string | null;
   originalFileName: string | null;
   created: string;
+  ipAddress: string;
 }
 
 const BoardDetailPage: React.FC = () => {
@@ -59,6 +60,7 @@ const BoardDetailPage: React.FC = () => {
       <div className="info">
         <span>작성자: {board.writer}</span>
         <span>작성일: {new Date(board.created).toLocaleString()}</span>
+        {user?.userType === 'admin' && <span className="ip-address">IP: {board.ipAddress}</span>}
       </div>
       <hr />
       {board.fileUrl && board.originalFileName && (
@@ -76,7 +78,7 @@ const BoardDetailPage: React.FC = () => {
 
       <div className="button-group">
         <button onClick={() => navigate('/boards')}>목록으로</button>
-        {(user?.id === board.writer || user?.userType === 'ADMIN') && (
+        {(user?.id === board.writer || user?.userType === 'admin') && (
           <>
             <button onClick={() => navigate(`/edit/${board.idx}`)}>수정</button>
             <button onClick={handleDelete} className="danger">

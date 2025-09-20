@@ -11,7 +11,8 @@ import BoardDetailPage from './pages/BoardDetailPage';
 import BoardUpdatePage from './pages/BoardUpdatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
-// TODO: 관리자 권한 강화(IP 추적, 다른 사용자의 게시물 수정 및 삭제)
+// TODO: SCSS 디자인 갈아엎기
+// TODO: README.md 작성하기
 
 function App() {
   const { isLoading } = useAuth();
