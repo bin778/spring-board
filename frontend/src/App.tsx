@@ -12,7 +12,7 @@ import BoardUpdatePage from './pages/BoardUpdatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
 // TODO: SCSS 디자인 갈아엎기
-// TODO: README.md 작성하기
+// TODO: 특수문자 RFC 규격 위반 문자 필터링
 
 function App() {
   const { isLoading } = useAuth();
