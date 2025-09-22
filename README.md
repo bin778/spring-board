@@ -120,23 +120,29 @@
 
 ## 5. 기술 스택
 
-### 🔧 Backend
+### 🖥️ Frontend
 
-- Framework: Spring Boot 3.x
-- Language: Java 17
-- Security: Spring Security 6.x
-- Data Access: MyBatis 3.x
-- Database: Oracle
-- Build Tool: Maven
+![HTML5](https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white) 
+![SCSS](https://img.shields.io/badge/SCSS-CC6699?style=for-the-badge&logo=sass&logoColor=white) 
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black) 
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) 
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 
-### 🎨 Frontend
+### ⚙️ Backend
 
-- Framework: React 18.x (Vite)
-- Language: TypeScript
-- Styling: SCSS
-- HTTP Client: Axios
-- Routing: React Router DOM v6
-- Editor: TipTap (WYSIWYG)
+![JAVA]("https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white")
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+
+### 💾 Database
+
+![Oracle](https://img.shields.io/badge/Oracle-4479A1?style=for-the-badge&logo=oracle&logoColor=white)
+
+### ☁️ Deployment & Tools
+
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white) 
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 
 ---
 
