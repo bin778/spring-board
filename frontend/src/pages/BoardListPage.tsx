@@ -42,10 +42,11 @@ const BoardListPage: React.FC = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate(`/boards?search=${searchTerm}&page=0`);
+    const encodedSearchTerm = encodeURIComponent(searchTerm);
+    navigate(`/boards?search=${encodedSearchTerm}&page=0`);
   };
 
-  if (!pageData) return <div>로딩 중...</div>;
+  if (!pageData) return <div>게시글이 없습니다.</div>;
 
   return (
     <div className="list-container">
