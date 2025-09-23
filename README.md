@@ -1,4 +1,4 @@
-# Spring & React 보안 강화 게시판 (Spring Board)
+# Spring & React 온라인 게시판 (Spring Board)
 
 - Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트.
 - 기본적인 CRUD 기능을 넘어, 실제 서비스 환경에서 고려해야 할 주요 보안 요소(XSS, CSRF, 개인정보 암호화 등)와 고급 검색 기능(한글 초성 검색)을 구현하는 것을 목표로 구현.
