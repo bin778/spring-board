@@ -19,6 +19,12 @@ const validatePassword = (password: string) => {
   return { hasMinLength, hasUpperCase, hasLowerCase, hasSpecialChar };
 };
 
+const validatePhone = (phone: string) => {
+  if (!phone) return true;
+  const phoneRegex = /^\d{9,11}$/;
+  return phoneRegex.test(phone.replaceAll('-', ''));
+};
+
 const UpdatePage = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -32,6 +38,7 @@ const UpdatePage = () => {
     hasLowerCase: true,
     hasSpecialChar: true,
   });
+  const [isPhoneValid, setIsPhoneValid] = useState(true);
 
   useEffect(() => {
     if (formData.pwd) {
@@ -40,6 +47,10 @@ const UpdatePage = () => {
       setValidity({ hasMinLength: true, hasUpperCase: true, hasLowerCase: true, hasSpecialChar: true });
     }
   }, [formData.pwd]);
+
+  useEffect(() => {
+    setIsPhoneValid(validatePhone(formData.phone));
+  }, [formData.phone]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -64,6 +75,11 @@ const UpdatePage = () => {
 
     if (formData.pwd && !Object.values(validity).every(Boolean)) {
       alert('새 비밀번호가 모든 조건을 만족하는지 확인해주세요.');
+      return;
+    }
+
+    if (!isPhoneValid) {
+      alert('전화번호 형식이 올바르지 않습니다.');
       return;
     }
 
@@ -111,6 +127,7 @@ const UpdatePage = () => {
         )}
         <input type="text" name="name" required value={formData.name} onChange={handleChange} />
         <input type="text" name="phone" value={formData.phone} onChange={handleChange} />
+        {!isPhoneValid && formData.phone && <p className="error-message">전화번호 형식이 올바르지 않습니다.</p>}
         <input type="text" name="address" value={formData.address} onChange={handleChange} />
         <button type="button" onClick={() => navigate(isAdminUpdate ? '/admin/list' : '/info')}>
           취소

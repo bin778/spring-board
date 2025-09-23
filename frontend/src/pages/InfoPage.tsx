@@ -5,7 +5,9 @@ import '../styles/_pages.scss';
 const InfoPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const hyphenPhone = user?.phone.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
+  let hyphenPhone = null;
+  if (user?.phone !== null)
+    hyphenPhone = user?.phone.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
 
   if (!user) return null;
 
