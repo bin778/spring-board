@@ -78,7 +78,11 @@ const UserListPage = () => {
               <td>{user.idx}</td>
               <td>{user.id}</td>
               <td>{user.name}</td>
-              <td>{user.phone.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`)}</td>
+              <td>
+                {user.phone === null
+                  ? null
+                  : user.phone.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`)}
+              </td>
               <td>{user.userType}</td>
               <td>{user.created.substring(0, 10)}</td>
               <td>

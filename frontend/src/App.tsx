@@ -11,7 +11,6 @@ import BoardDetailPage from './pages/BoardDetailPage';
 import BoardUpdatePage from './pages/BoardUpdatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
-// TODO: 전화번호 정규표현식 회원가입 검사
 // TODO: SCSS 디자인 갈아엎기
 // TODO: 특수문자 RFC 규격 위반 문자 필터링
 

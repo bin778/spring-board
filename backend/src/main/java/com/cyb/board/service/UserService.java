@@ -18,13 +18,18 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EncryptionService encryptionService;
 
-    private static final String PASSWORD_PATTERN =
-            "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$";
+    private static final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$";
+    private static final String PHONE_PATTERN = "^\\d{9,11}$";
 
     public void register(UserDto userDto) {
         if (isValidPassword(userDto.getPwd())) {
             throw new IllegalArgumentException("비밀번호는 최소 8자리 이상이며, 대소문자와 특수문자를 모두 포함해야 합니다.");
         }
+
+        if (StringUtils.hasText(userDto.getPhone()) && !isValidPhone(userDto.getPhone())) {
+            throw new IllegalArgumentException("전화번호 형식이 올바르지 않습니다. (하이픈(-) 제외)");
+        }
+
         userDto.setPwd(passwordEncoder.encode(userDto.getPwd()));
         encryptUserFields(userDto);
         userMapper.insertUser(userDto);
@@ -62,6 +67,11 @@ public class UserService {
             userMapper.findById(userDto.getId())
                     .ifPresent(existingUser -> userDto.setPwd(existingUser.getPwd()));
         }
+
+        if (StringUtils.hasText(userDto.getPhone()) && !isValidPhone(userDto.getPhone())) {
+            throw new IllegalArgumentException("전화번호 형식이 올바르지 않습니다. (하이픈(-) 제외)");
+        }
+        
         encryptUserFields(userDto);
         userMapper.updateUser(userDto);
     }
@@ -69,6 +79,11 @@ public class UserService {
     private boolean isValidPassword(String password) {
         if (password == null) return true;
         return !Pattern.matches(PASSWORD_PATTERN, password);
+    }
+
+    private boolean isValidPhone(String phone) {
+        if (phone == null) return false;
+        return Pattern.matches(PHONE_PATTERN, phone.replaceAll("-", ""));
     }
 
     private void encryptUserFields(UserDto user) {

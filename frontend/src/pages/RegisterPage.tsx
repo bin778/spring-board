@@ -10,6 +10,12 @@ const validatePassword = (password: string) => {
   return { hasMinLength, hasUpperCase, hasLowerCase, hasSpecialChar };
 };
 
+const validatePhone = (phone: string) => {
+  if (!phone) return true;
+  const phoneRegex = /^\d{9,11}$/;
+  return phoneRegex.test(phone.replaceAll('-', ''));
+};
+
 const RegisterPage = () => {
   const [formData, setFormData] = useState({ id: '', pwd: '', pwd2: '', name: '', phone: '', address: '' });
   const [validity, setValidity] = useState({
@@ -18,11 +24,16 @@ const RegisterPage = () => {
     hasLowerCase: false,
     hasSpecialChar: false,
   });
+  const [isPhoneValid, setIsPhoneValid] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     setValidity(validatePassword(formData.pwd));
   }, [formData.pwd]);
+
+  useEffect(() => {
+    setIsPhoneValid(validatePhone(formData.phone));
+  }, [formData.phone]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -35,8 +46,14 @@ const RegisterPage = () => {
       alert('비밀번호가 모든 조건을 만족하는지 확인해주세요.');
       return;
     }
+
     if (formData.pwd !== formData.pwd2) {
       alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    if (!isPhoneValid) {
+      alert('전화번호 형식이 올바르지 않습니다.');
       return;
     }
 
@@ -62,7 +79,6 @@ const RegisterPage = () => {
         <div>
           <input type="text" name="id" placeholder="아이디 입력" onChange={handleChange} required />
           <input type="password" name="pwd" placeholder="비밀번호 입력" onChange={handleChange} required />
-
           <div className="password-validation">
             <p className={validity.hasMinLength ? 'valid' : 'invalid'}>✓ 8자리 이상</p>
             <p className={validity.hasLowerCase ? 'valid' : 'invalid'}>✓ 소문자 포함</p>
@@ -72,7 +88,10 @@ const RegisterPage = () => {
 
           <input type="password" name="pwd2" placeholder="비밀번호 확인" onChange={handleChange} required />
           <input type="text" name="name" placeholder="이름 입력" onChange={handleChange} required />
+
           <input type="text" name="phone" placeholder="전화번호 입력" onChange={handleChange} required />
+          {!isPhoneValid && formData.phone && <p className="error-message">전화번호 형식이 올바르지 않습니다.</p>}
+
           <input type="text" name="address" placeholder="주소 입력" onChange={handleChange} required />
         </div>
         <div>
