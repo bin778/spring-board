@@ -5,6 +5,7 @@ import '../styles/_pages.scss';
 const InfoPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const hyphenPhone = user?.phone.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
 
   if (!user) return null;
 
@@ -24,7 +25,7 @@ const InfoPage = () => {
               <strong>이름:</strong> {user.name}
             </p>
             <p>
-              <strong>연락처:</strong> {user.phone}
+              <strong>연락처:</strong> {hyphenPhone}
             </p>
             <p>
               <strong>주소:</strong> {user.address}
