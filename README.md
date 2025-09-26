@@ -1,8 +1,6 @@
 # 🌱 Spring & React 온라인 게시판 (Spring Board)
 
-Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트입니다.  
-기본적인 CRUD 기능을 넘어, 실제 서비스 환경에서 고려해야 할 주요 보안 요소(XSS, CSRF, 개인정보 암호화 등)와  
-고급 검색 기능(한글 초성 검색)을 구현하는 것을 목표로 개발했습니다.
+Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기본적인 CRUD 기능을 넘어, 실제 서비스 환경에서 고려해야 할 주요 보안 요소(XSS, CSRF, 개인정보 암호화 등)와 고급 검색 기능(한글 초성 검색)을 구현하는 것을 목표로 개발.
 
 ---
 
@@ -24,6 +22,8 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트입니�
 - **백엔드**: Spring Boot 기반 API 서버
 - **프론트엔드**: React (Vite) 기반 SPA UI
 - **주요 특징**: 사용자 인증, 게시물 관리, 첨부파일, 보안 강화(XSS/CSRF/암호화)
+- **DB**: Apple Silicon macOS 환경에서 Docker를 이용하여 Oracle 컨테이너를 생성하고 실행.
+  - `colima start --memory 4 --arch x86_64`: Oracle은 x86/64 아키텍처 계열만 지원하기 때문에 x86_64 환경을 에뮬레이션하여 Docker 실행 환경을 구축.
 
 ### 1.2 개발 목표
 
