@@ -1,95 +1,160 @@
 @use 'variables' as v;
 @use 'sass:color';
 
-.info-container {
-  text-align: left;
-  margin: 30px 0;
-  padding: 20px;
-  border: 1px solid color.adjust(v.$border-color, $lightness: 5%);
-  border-radius: 8px;
-}
-
-.info-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid color.adjust(v.$border-color, $lightness: 10%);
-
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
+.list-container,
 .detail-container {
   width: 100%;
-  max-width: 800px;
-  text-align: left;
+  max-width: v.$desktop-width;
+  background-color: v.$bg-component;
+  padding: 32px;
+  border-radius: v.$border-radius-base;
+  box-shadow: v.$box-shadow-base;
+}
 
-  .info {
-    color: v.$text-secondary;
-    margin: 10px 0;
-    span + span {
-      margin-left: 15px;
-    }
+.search-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  input {
+    flex-grow: 1;
+    margin-bottom: 0;
   }
+}
 
-  .file-attachment {
-    margin: 15px 0;
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+
+  button {
+    min-width: 40px;
     padding: 10px;
-    background-color: v.$bg-light;
-    border-radius: 4px;
-  }
-
-  .content {
-    margin-top: 20px;
-    line-height: 1.7;
-
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
+    background-color: v.$bg-component;
+    color: v.$text-secondary;
+    border: 1px solid v.$border-color;
+    &[disabled] {
+      background-color: v.$primary-color;
+      color: v.$bg-white;
+      border-color: v.$primary-color;
     }
-  }
-
-  .button-group {
-    margin-top: 30px;
-    text-align: center;
   }
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 20px 0;
-  font-size: 0.9em;
+  margin: 24px 0;
+  font-size: 1rem;
 
   th,
   td {
-    padding: 7px;
-    border: 1px solid #ddd;
+    padding: 16px 12px;
+    border-bottom: 1px solid v.$border-color;
     text-align: center;
   }
-
   th {
-    background-color: #f2f2f2;
-    color: #333;
+    font-weight: 700;
+    background-color: v.$bg-light;
   }
-
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
+  tbody tr {
+    cursor: pointer;
+    &:hover {
+      background-color: v.$bg-hover;
+    }
   }
 }
 
 .info-summary {
   text-align: right;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   color: v.$text-secondary;
+}
+.info-container {
+  text-align: left;
+  margin: 24px 0;
 
-  span {
-    margin-left: 15px;
+  .info-item {
+    display: flex;
+    padding: 12px 0;
+    border-bottom: 1px solid #f2f4f6;
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      font-weight: 700;
+      width: 100px;
+    }
+  }
+}
+
+.detail-container {
+  text-align: left !important;
+  .info {
+    color: v.$text-secondary;
+    margin: 12px 0;
+    span + span {
+      margin-left: 16px;
+    }
+    .ip-address {
+      font-size: 0.9rem;
+    }
   }
 
-  strong {
-    color: v.$primary-color;
+  .content {
+    margin-top: 24px;
+    line-height: 1.7;
+    min-height: 200px;
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+  }
+}
+
+@media (max-width: (v.$desktop-width - 1px)) {
+  .list-container,
+  .detail-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: (v.$tablet-width - 1px)) {
+  .list-container,
+  .detail-container {
+    padding: 16px;
+  }
+
+  table {
+    tr {
+      border: 1px solid v.$border-color;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 0.7rem;
+    }
+
+    td {
+      padding: 12px 16px;
+      text-align: right;
+      position: relative;
+      border: none;
+      border-bottom: 1px solid #f2f4f6;
+
+      &::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 16px;
+        font-weight: 700;
+        color: v.$text-primary;
+      }
+    }
+  }
+
+  .search-form {
+    gap: 8px;
+    margin-bottom: 16px;
   }
 }

@@ -1,16 +1,25 @@
-$primary-color: #007bff;
-$secondary-color: #6c757d;
-$danger-color: #dc3545;
+$primary-color: #3182f6;
+$secondary-color: #4e5968;
+$danger-color: #f04452;
+$success-color: #28a745;
 
-$bg-light: #f8f9fa;
+$bg-body: #f2f4f6;
+$bg-component: #ffffff;
 $bg-white: #ffffff;
+$bg-hover: #f9fafb;
+$bg-light: #f8f9fa;
 
-$text-dark: #212529;
-$text-secondary: #495057;
-$text-muted: #6c757d;
+$text-primary: #333d4b;
+$text-secondary: #6b7684;
+$text-placeholder: #adb5bd;
 
-$border-color: #ced4da;
+$border-color: #d1d6db;
+$border-focus-color: #5da1f8;
 
 $font-family-base: 'Noto Sans KR', sans-serif;
 
-$box-shadow-base: 0 8px 20px rgba(0, 0, 0, 0.08);
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+$box-shadow-base: 0 4px 16px rgba(0, 0, 0, 0.08);
+$border-radius-base: 12px;

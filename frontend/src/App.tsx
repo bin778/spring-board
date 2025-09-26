@@ -11,8 +11,7 @@ import BoardDetailPage from './pages/BoardDetailPage';
 import BoardUpdatePage from './pages/BoardUpdatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
-// TODO: SCSS 디자인 갈아엎기
-// TODO: 특수문자 RFC 규격 위반 문자 필터링
+// TODO: 회원 목록 SCSS 잘리는 문제 해결하기
 
 function App() {
   const { isLoading } = useAuth();

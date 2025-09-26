@@ -2,45 +2,53 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: v.$font-family-base;
-  background-color: v.$bg-light;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+  background-color: v.$bg-body;
+  color: v.$text-primary;
   margin: 0;
-  padding: 20px;
-  box-sizing: border-box;
+  padding-top: 80px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
 
   > div {
-    background-color: v.$bg-white;
-    padding: 30px 40px;
-    border-radius: 12px;
+    background-color: v.$bg-component;
+    padding: 32px;
+    border-radius: v.$border-radius-base;
     box-shadow: v.$box-shadow-base;
-    width: 700px;
     text-align: center;
   }
 }
 
 h1,
-h2 {
-  color: v.$text-dark;
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 24px 0;
+  font-weight: 700;
 }
 
 h1 {
-  margin-bottom: 20px;
+  font-size: 1.8rem;
 }
 
 h2 {
-  font-size: 1.2rem;
-  font-weight: normal;
-  color: v.$text-secondary;
-  margin-bottom: 30px;
+  font-size: 1.5rem;
 }
 
 p {
-  color: v.$text-muted;
+  color: v.$text-secondary;
   line-height: 1.6;
 }
 
@@ -51,10 +59,33 @@ strong {
 a {
   color: v.$primary-color;
   text-decoration: none;
-  display: inline-block;
-  margin-top: 20px;
-
   &:hover {
     text-decoration: underline;
+  }
+}
+
+@media (max-width: (v.$tablet-width - 1px)) {
+  body {
+    padding-top: 60px;
+  }
+  .container {
+    padding: 16px;
+    font-size: 0.8rem;
+
+    > div {
+      padding: 24px;
+    }
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  p {
+    line-height: 1;
   }
 }

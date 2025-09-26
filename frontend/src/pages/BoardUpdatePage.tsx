@@ -97,7 +97,7 @@ const BoardUpdatePage: React.FC = () => {
   if (!board) return <div>로딩 중...</div>;
 
   return (
-    <div>
+    <div className="detail-container">
       <h1>게시글 수정</h1>
       <form onSubmit={handleSubmit} className="write-form">
         <div className="form-group">

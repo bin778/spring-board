@@ -106,7 +106,7 @@ const UpdatePage = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <h2>'{formData.name}'님의 정보를 수정합니다.</h2>
       <form onSubmit={handleSubmit}>
         <input type="hidden" name="id" value={formData.id} />
