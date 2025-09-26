@@ -87,6 +87,7 @@ input[type='file'] {
 
 button,
 a.button,
+.button,
 [type='submit'] {
   display: inline-flex;
   align-items: center;
@@ -101,14 +102,17 @@ a.button,
   cursor: pointer;
   transition: background-color 0.2s;
 
-  &[type='submit'] {
+  &[type='submit'],
+  a.button {
     background-color: v.$primary-color;
     color: v.$bg-white;
   }
+
   &[type='button'] {
     background-color: v.$secondary-color;
     color: v.$bg-white;
   }
+
   &.danger,
   &[onclick*='delete'] {
     background-color: v.$danger-color;
@@ -215,6 +219,7 @@ a.button,
 
   button,
   a.button,
+  .button,
   [type='submit'] {
     min-width: 80px;
     padding: 8px 16px;

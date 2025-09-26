@@ -11,7 +11,6 @@ import BoardDetailPage from './pages/BoardDetailPage';
 import BoardUpdatePage from './pages/BoardUpdatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
-// TODO: 회원 목록 SCSS 잘리는 문제 해결하기
 
 function App() {
   const { isLoading } = useAuth();

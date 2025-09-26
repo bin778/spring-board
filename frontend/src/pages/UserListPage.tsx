@@ -59,45 +59,47 @@ const UserListPage = () => {
           금일 가입: <strong>{data.todayCount}</strong>
         </span>
       </div>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>번호</th>
-            <th>아이디</th>
-            <th>이름</th>
-            <th>연락처</th>
-            <th>타입</th>
-            <th>가입일</th>
-            <th>관리</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.userList.map(user => (
-            <tr key={user.idx}>
-              <td>{user.idx}</td>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>
-                {user.phone === null
-                  ? null
-                  : user.phone.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`)}
-              </td>
-              <td>{user.userType}</td>
-              <td>{user.created.substring(0, 10)}</td>
-              <td>
-                {user.userType !== 'admin' && (
-                  <>
-                    <button onClick={() => navigate(`/admin/update/${user.id}`)}>수정</button>
-                    <button onClick={() => handleDelete(user.id, user.name)} style={{ backgroundColor: '#dc3545' }}>
-                      삭제
-                    </button>
-                  </>
-                )}
-              </td>
+      <div className="table-scroll-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>아이디</th>
+              <th>이름</th>
+              <th>연락처</th>
+              <th>타입</th>
+              <th>가입일</th>
+              <th>관리</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.userList.map(user => (
+              <tr key={user.idx}>
+                <td>{user.idx}</td>
+                <td>{user.id}</td>
+                <td>{user.name}</td>
+                <td>
+                  {user.phone === null
+                    ? null
+                    : user.phone.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`)}
+                </td>
+                <td>{user.userType}</td>
+                <td>{user.created.substring(0, 10)}</td>
+                <td>
+                  {user.userType !== 'admin' && (
+                    <>
+                      <button onClick={() => navigate(`/admin/update/${user.id}`)}>수정</button>
+                      <button onClick={() => handleDelete(user.id, user.name)} style={{ backgroundColor: '#dc3545' }}>
+                        삭제
+                      </button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <button onClick={() => navigate('/')} style={{ marginTop: '20px' }}>
         메인으로
       </button>

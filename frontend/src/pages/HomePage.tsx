@@ -67,6 +67,7 @@ function HomePage() {
           <button type="submit">로그인</button>
           <a
             href="/register"
+            className="button"
             onClick={e => {
               e.preventDefault();
               navigate('/register');

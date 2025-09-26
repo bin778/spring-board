@@ -99,7 +99,9 @@ const RegisterPage = () => {
         </div>
       </form>
       <div>
-        <Link to="/">취소</Link>
+        <Link to="/" className="button">
+          취소
+        </Link>
       </div>
     </div>
   );
