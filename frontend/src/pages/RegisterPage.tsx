@@ -90,7 +90,9 @@ const RegisterPage = () => {
           <input type="text" name="name" placeholder="이름 입력" onChange={handleChange} required />
 
           <input type="text" name="phone" placeholder="전화번호 입력" onChange={handleChange} required />
-          {!isPhoneValid && formData.phone && <p className="error-message">전화번호 형식이 올바르지 않습니다.</p>}
+          <div>
+            {!isPhoneValid && formData.phone && <p className="error-message">전화번호 형식이 올바르지 않습니다.</p>}
+          </div>
 
           <input type="text" name="address" placeholder="주소 입력" onChange={handleChange} required />
         </div>
