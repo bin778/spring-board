@@ -16,6 +16,7 @@ interface Page<T> {
   number: number;
 }
 
+// TODO: 게시물 목록 Excel로 다운로드 기능 추가(관리자 한정)
 const BoardListPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();

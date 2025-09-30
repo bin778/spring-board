@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cyb.board.mapper.CommentMapper">
+
+    <select id="findByBoardId" parameterType="long" resultType="com.cyb.board.dto.CommentDto">
+        SELECT idx, board_idx AS boardIdx, content, writer, created_date AS createdDate
+        FROM comments
+        WHERE board_idx = #{boardId}
+        ORDER BY created_date
+    </select>
+
+    <select id="findById" parameterType="long" resultType="com.cyb.board.dto.CommentDto">
+        SELECT * FROM comments WHERE idx = #{id}
+    </select>
+
+    <insert id="save" parameterType="com.cyb.board.dto.CommentDto">
+        <selectKey keyProperty="idx" resultType="long" order="BEFORE">
+            SELECT comments_seq.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO comments (idx, board_idx, content, writer)
+        VALUES (#{idx}, #{boardIdx}, #{content}, #{writer})
+    </insert>
+
+    <update id="update" parameterType="com.cyb.board.dto.CommentDto">
+        UPDATE comments SET content = #{content} WHERE idx = #{idx}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM comments WHERE idx = #{id}
+    </delete>
+</mapper>

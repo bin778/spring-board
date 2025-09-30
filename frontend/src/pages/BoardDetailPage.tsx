@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
+import Comments from '../components/Comments';
 import { useAuth } from '../contexts/AuthContext';
 
 interface Board {
@@ -62,7 +63,7 @@ const BoardDetailPage: React.FC = () => {
         <span>작성일: {new Date(board.created).toLocaleString()}</span>
         {user?.userType === 'admin' && <span className="ip-address">IP: {board.ipAddress}</span>}
       </div>
-      <hr />
+      <hr className="divider" />
       {board.fileUrl && board.originalFileName && (
         <div className="file-attachment">
           <a
@@ -87,6 +88,7 @@ const BoardDetailPage: React.FC = () => {
           </>
         )}
       </div>
+      <Comments boardId={boardId!} />
     </div>
   );
 };
