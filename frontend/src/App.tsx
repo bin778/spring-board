@@ -12,6 +12,7 @@ import BoardUpdatePage from './pages/BoardUpdatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
 
+// TODO: 프로젝트 빌드하고 배포하기
 function App() {
   const { isLoading } = useAuth();
 
