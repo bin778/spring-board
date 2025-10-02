@@ -17,4 +17,5 @@ public interface BoardMapper {
     void deleteBoard(int id);
     List<BoardDto> findWithChosungSearch(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("search") String search);
     int countWithChosungSearch(@Param("search") String search);
+    List<BoardDto> findAllForExcel();
 }

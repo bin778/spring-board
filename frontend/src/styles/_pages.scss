@@ -11,6 +11,33 @@
   box-shadow: v.$box-shadow-base;
 }
 
+.list-container {
+  .list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    margin: 0;
+  }
+
+  .excel-download-btn {
+    background-color: #217346;
+    color: v.$bg-white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+
+    &:hover {
+      background-color: color-mix(in srgb, #217346, black 10%);
+    }
+  }
+}
+
 .search-form {
   display: flex;
   gap: 12px;
@@ -120,12 +147,34 @@ table {
   .detail-container {
     max-width: 100%;
   }
+
+  .list-container {
+    .list-header {
+      margin-bottom: 15px;
+    }
+
+    .excel-download-btn {
+      padding: 6px 10px;
+      font-size: 0.8rem;
+    }
+  }
 }
 
 @media (max-width: (v.$tablet-width - 1px)) {
   .list-container,
   .detail-container {
     padding: 16px;
+  }
+
+  .list-container {
+    .list-header {
+      margin-bottom: 10px;
+    }
+
+    .excel-download-btn {
+      padding: 4px 7px;
+      font-size: 0.7rem;
+    }
   }
 
   .info-summary {

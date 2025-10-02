@@ -6,7 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import com.cyb.board.service.BoardService;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -14,6 +18,7 @@ import java.util.Map;
 public class AdminController {
 
     private final UserService userService;
+    private final BoardService boardService;
 
     @GetMapping("/users")
     public ResponseEntity<Map<String, Object>> getUserList() {
@@ -41,5 +46,16 @@ public class AdminController {
     public ResponseEntity<String> updateUserByAdmin(@RequestBody UserDto userDto) {
         userService.updateUser(userDto);
         return ResponseEntity.ok("관리자에 의해 정보가 성공적으로 수정되었습니다.");
+    }
+
+    @GetMapping("/boards/excel")
+    public void downloadBoardsAsExcel(HttpServletResponse response) throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String fileName = "board_posts_" + timeStamp + ".xlsx";
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+
+        boardService.writeBoardsToExcel(response.getOutputStream());
     }
 }

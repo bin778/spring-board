@@ -41,6 +41,15 @@
         WHERE idx = #{id}
     </select>
 
+    <select id="findAllForExcel" resultType="com.cyb.board.dto.BoardDto">
+        SELECT
+            idx, title, description AS content, writer, created,
+            last_updated AS lastUpdated, file_url AS fileUrl,
+            original_file_name AS originalFileName, ip_address AS ipAddress
+        FROM board
+        ORDER BY idx DESC
+    </select>
+
     <update id="updateBoard" parameterType="com.cyb.board.dto.BoardDto">
         UPDATE board
         <set>

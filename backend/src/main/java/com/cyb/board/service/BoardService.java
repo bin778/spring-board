@@ -3,6 +3,7 @@ package com.cyb.board.service;
 import com.cyb.board.dto.BoardDto;
 import com.cyb.board.mapper.BoardMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import org.apache.poi.ss.usermodel.*;
+import java.io.*;
 
 @Service
 @RequiredArgsConstructor
@@ -72,5 +75,47 @@ public class BoardService {
             throw new AccessDeniedException("삭제 권한이 없습니다.");
         }
         boardMapper.deleteBoard(id);
+    }
+
+    public void writeBoardsToExcel(OutputStream outputStream) throws IOException {
+        List<BoardDto> boards = boardMapper.findAllForExcel();
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("게시물 목록");
+
+            String[] headers = {"번호", "제목", "내용", "작성자", "작성일", "IP 주소", "첨부파일"};
+            Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+            }
+
+            for (int i = 0; i < boards.size(); i++) {
+                BoardDto board = boards.get(i);
+                Row row = sheet.createRow(i + 1);
+
+                row.createCell(0).setCellValue(board.getIdx());
+                row.createCell(1).setCellValue(board.getTitle());
+                String cleanContent = cleanContentForExcel(board.getContent());
+                row.createCell(2).setCellValue(cleanContent);
+                row.createCell(3).setCellValue(board.getWriter());
+                row.createCell(4).setCellValue(board.getCreated());
+                row.createCell(5).setCellValue(board.getIpAddress());
+
+                String fileLink = "";
+                if (board.getFileUrl() != null && board.getOriginalFileName() != null) {
+                    fileLink = "http://localhost:8080/api/files/download/" + board.getFileUrl() + "?originalFileName=" + board.getOriginalFileName();
+                }
+                row.createCell(6).setCellValue(fileLink);
+            }
+
+            workbook.write(outputStream);
+        }
+    }
+
+    private String cleanContentForExcel(String htmlContent) {
+        if (htmlContent == null) return "";
+        String contentWithLinks = htmlContent.replaceAll("<img src=\"([^\"]+)\"[^>]*>", "$1 ");
+        return contentWithLinks.replaceAll("<[^>]+>", "");
     }
 }

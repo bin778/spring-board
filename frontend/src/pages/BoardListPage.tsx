@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import apiClient from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Board {
   idx: number;
@@ -16,10 +17,10 @@ interface Page<T> {
   number: number;
 }
 
-// TODO: 게시물 목록 Excel로 다운로드 기능 추가(관리자 한정)
 const BoardListPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const [pageData, setPageData] = useState<Page<Board> | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -51,7 +52,14 @@ const BoardListPage: React.FC = () => {
 
   return (
     <div className="list-container">
-      <h1>게시판</h1>
+      <div className="list-header">
+        <h1>게시판</h1>
+        {user?.userType === 'admin' && (
+          <a href="http://localhost:8080/api/admin/boards/excel" className="excel-download-btn">
+            엑셀로 다운로드
+          </a>
+        )}
+      </div>
       <form onSubmit={handleSearch} className="search-form">
         <input
           type="text"
