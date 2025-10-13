@@ -1,0 +1,24 @@
+# Git File
+.git
+.gitignore
+
+# Maven Build
+target/*
+!target/*.jar
+
+# IDE File
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Log File
+*.log
+
+# User Upload File
+uploads/
+
+# Maven Wrapper File
+.mvn/
+mvnw
+mvnw.cmd
