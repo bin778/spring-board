@@ -22,3 +22,6 @@ uploads/
 .mvn/
 mvnw
 mvnw.cmd
+
+# Local File
+src/main/resources/application-local.properties
