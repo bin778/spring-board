@@ -6,13 +6,14 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
 
 ## 📑 목차
 
-- 프로젝트 개요
-- 주요 기능
-- 요구사항 확인서
-- API 정의서
-- 기술 스택
-- 빌드 및 실행
-- 트러블 슈팅
+- [1. 프로젝트 개요](#1--프로젝트-개요)
+- [2. 주요 기능](#2--주요-기능)
+- [3. 요구사항 확인서](#3--요구사항-확인서)
+- [4. API 정의서](#4--api-정의서)
+- [5. 기술 스택](#5-%EF%B8%8F-기술-스택)
+- [6. 빌드 및 실행](#6--빌드-및-실행)
+- [7. 트러블 슈팅](#7--트러블-슈팅)
+- [8. 실행 화면](#8--실행-화면)
 
 ---
 
@@ -51,7 +52,7 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
 - **파일 첨부**:
   - 게시글 내용에 이미지 업로드 및 표시 (XSS 방어 처리)
   - 별도의 파일 첨부 및 다운로드 (파일명 유지, 한글 깨짐 방지)
-  - 파일 크기 제한(10MB) 및 예외 처리
+  - 파일 크기 제한(20MB) 및 예외 처리
 
 ### 👑 관리자 기능
 
@@ -76,7 +77,7 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
 |  8  | 게시물 검색            |    ✅     | 일반 검색 + 초성 검색             |
 |  9  | 게시물 페이징          |    ✅     | Spring Data Pageable              |
 | 10  | 관리자 기능            |    ✅     | 회원/게시물 관리, Excel 다운로드  |
-| 11  | 배포                   |    ✅     | Docker 컨테이너화                 |
+| 11  | Docker 실습          |    ✅     | Backend Docker 컨테이너화                 |
 
 ---
 
@@ -176,12 +177,14 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
     ```
 3.  **Docker 컨테이너 실행**:
     ```bash
-    docker run -p 8080:8080 \
-      -e ENCRYPTION_KEY="your_secret_key" \
-      -e SPRING_DATASOURCE_URL="jdbc:oracle:thin:@host.docker.internal:1521/XE" \
-      -e SPRING_DATASOURCE_USERNAME="board_man" \
-      -e SPRING_DATASOURCE_PASSWORD="password" \
-      your-docker-id/spring-board:latest
+    docker run -d -p 8080:8080 \
+      -e "SPRING_PROFILES_ACTIVE=docker" \
+      -e "DB_URL=jdbc:oracle:thin:@host.docker.internal:1521:XE" \
+      -e "DB_USERNAME=your_db_username" \
+      -e "DB_PASSWORD=your_db_password" \
+      -e "ENCRYPTION_KEY=your_secret_encryption_key" \
+      --name spring-board-app \
+      bin778/spring-board:latest
     ```
 
 ### Frontend
@@ -234,3 +237,51 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
   - `csrf().ignoringRequestMatchers(...)`를 통해 로그인/회원가입 경로를 CSRF 검증 예외로 명시적으로 등록.
 
 </details>
+
+<details>
+<summary><strong>4. Docker 컨테이너 실행 오류 해결 과정</strong></summary>
+
+- **1차 문제: DB 연동 실패**
+  - **문제**: `ORA-12541: Cannot connect. No listener at host localhost port 1521.`
+  - **원인**: 컨테이너 내부의 `localhost`는 컨테이너 자신을 가리키므로, 호스트 PC의 DB에 접속할 수 없음.
+  - **해결**: 접속 주소를 `localhost`에서 `host.docker.internal`로 변경하여 컨테이너가 호스트 PC를 바라보도록 수정.
+- **2차 문제: 설정 파일 누락**
+  - **문제**: `Failed to configure a DataSource: 'url' attribute is not specified`
+  - **원인**: `application-docker.yml` 파일을 프로젝트에 추가했지만, `mvn clean package`를 다시 실행하지 않아 새로 빌드된 `.jar` 파일에 해당 설정이 포함되지 않았음.
+  - **해결**: Docker 이미지를 빌드하기 전에 반드시 Maven 프로젝트를 먼저 빌드하여 최신 변경사항이 .jar 파일에 반영되도록 프로세스를 수정
+- **3차 문제: 민감한 정보(암호화 키) 누락**
+  - **문제**: `Could not resolve placeholder 'encryption.key'`
+  - **원인**: 암호화 키가 Docker 프로파일 설정 파일에 정의되지 않았음. 또한, 보안을 위해 민감한 정보를 `Git`에 포함시키지 않았음.
+  - **해결**: 모든 민감 정보(DB 접속 정보, 암호화 키)를 환경 변수로 외부에서 주입하도록 `application.yml`과 `docker run` 명령어를 수정. 이를 통해 동일한 이미지를 어떤 환경에서든 설정만 바꿔서 실행할 수 있는 유연하고 안전한 구조를 완성.
+
+</details>
+
+---
+
+## 8. 📸 실행 화면
+
+#### 로그인
+
+<img width="2000" height="1000" alt="image" src="https://github.com/user-attachments/assets/e7e7c799-17db-4306-a61d-a4074d62864e" />
+
+#### 회원 가입
+
+<img width="2000" height="1000" alt="image" src="https://github.com/user-attachments/assets/7960bfbb-2779-4024-9daa-11edcac1c6d7" />
+
+#### 회원 관리
+
+<img width="2000" height="1000" alt="image" src="https://github.com/user-attachments/assets/d3cd8af4-cd52-48a0-bfd0-039a43149580" />
+
+#### 게시글 작성
+
+<img width="2000" height="1000" alt="image" src="https://github.com/user-attachments/assets/9a6634dd-3c9f-4a83-b300-6708aa889c86" />
+
+#### 게시글 목록
+
+<img width="2000" height="1000" alt="image" src="https://github.com/user-attachments/assets/86f086f3-aa46-477b-bae4-4a52522d3c77" />
+
+### 게시글 내용
+
+<img width="2000" height="1000" alt="image" src="https://github.com/user-attachments/assets/9b4588e2-9e3b-42ed-871b-c32213ce89b3" />
+
+<img width="2000" height="1000" alt="image" src="https://github.com/user-attachments/assets/dc9cb1fc-6416-43a2-8daf-40aefd56f781" />
