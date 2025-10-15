@@ -167,15 +167,11 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
 
 ### Backend (Docker)
 
-1.  **JAR 파일 빌드**: `backend` 디렉토리에서 아래 명령어 실행
+1.  **Docker 이미지 다운로드**: `Docker Hub`에 있는 `bin778/spring-board:latest` 이미지를 사용하여 애플리케이션을 실행
     ```bash
-    ./mvnw clean package
+    docker pull bin778/spring-board:latest
     ```
-2.  **Docker 이미지 빌드**: `backend` 디렉토리에 있는 `Dockerfile`을 사용하여 이미지 생성
-    ```bash
-    docker build -t your-docker-id/spring-board:latest .
-    ```
-3.  **Docker 컨테이너 실행**:
+2.  **Docker 컨테이너 실행**: 명령어의 `-e` 플래그로 설정하는 환경 변수 값들을 반드시 자신의 환경에 맞게 수정.
     ```bash
     docker run -d -p 8080:8080 \
       -e "SPRING_PROFILES_ACTIVE=docker" \
@@ -186,6 +182,15 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
       --name spring-board-app \
       bin778/spring-board:latest
     ```
+
+| 환경 변수 이름           | 설명                                                                                          | 기본값 / 예시                                  |
+|----------------------------|-----------------------------------------------------------------------------------------------|------------------------------------------------|
+| SPRING_PROFILES_ACTIVE     | 실행 환경 프로파일을 설정. 특별한 경우가 아니면 `docker`로 유지할 것.                | `docker`                                         |
+| DB_URL                     | 연결할 Oracle 데이터베이스의 URL. `host.docker.internal`은 Docker 컨테이너가 실행 중인 호스트 머신을 가리킴. | `jdbc:oracle:thin:@host.docker.internal:1521:XE` |
+| DB_USERNAME                | 데이터베이스 사용자 아이디를 입력.                                                 | `db_username`                                         |
+| DB_PASSWORD                | 데이터베이스 비밀번호를 입력.                                                      | `db_password`                                         |
+| ENCRYPTION_KEY             | 애플리케이션 내부에서 사용할 대칭 암호화 키.                                        | `your_secret_encryption_key`                          |
+
 
 ### Frontend
 
