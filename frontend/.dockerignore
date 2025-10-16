@@ -1,0 +1,19 @@
+# node_modules File
+node_modules
+
+# Build File
+dist
+build
+
+# IDE File
+.DS_Store
+.vscode/
+.idea/
+
+# Log File
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# .Git
+.git
