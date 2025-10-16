@@ -77,7 +77,8 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
 |  8  | 게시물 검색            |    ✅     | 일반 검색 + 초성 검색             |
 |  9  | 게시물 페이징          |    ✅     | Spring Data Pageable              |
 | 10  | 관리자 기능            |    ✅     | 회원/게시물 관리, Excel 다운로드  |
-| 11  | Docker 실습          |    ✅     | Backend Docker 컨테이너화                 |
+| 11  | Docker 컨테이너화      |    ✅     | Backend, Frontend 애플리케이션 컨테이너화 완료     |
+| 12  | Kubernetes 실습        |    ✅     | 로컬(Docker Desktop) 환경에서 전체 애플리케이션 배포 |
 
 ---
 
@@ -160,6 +161,7 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)
 
 ---
 
@@ -206,7 +208,18 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
     ```bash
     npm run build
     ```
+    
+### Frontend (Docker)
 
+1.  **Frontend Docker 이미지 빌드**: `Docker Hub`에 있는 `bin778/spring-board-frontend:latest` 이미지를 사용하여 애플리케이션을 실행
+    ```bash
+    docker pull bin778/spring-board-frontend:latest .
+    ```
+2.  **Frontend Docker 컨테이너 실행**: Nginx 기반의 웹 서버로 Frontend를 서빙
+    ```bash
+    docker run -d -p 3000:80 --name spring-board-frontend bin778/spring-board-frontend:latest
+    ```
+    
 ---
 
 ## 7. 🐞 트러블 슈팅
@@ -261,6 +274,30 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
 
 </details>
 
+<details>
+<summary><strong>5. Kubernetes 로컬 실습 오류 해결 과정</strong></summary>
+
+- **목표**: 전체 애플리케이션 스택(Oracle DB, Spring Backend, React Frontend)을 로컬 쿠버네티스 클러스터에 배포하고 정상 동작 확인.
+- **최종 상태**: 모든 Pod와 Service가 정상 실행되었으나, 로그인/회원가입 시 `401 Unauthorized` 오류 발생. 아키텍처에 맞지 않는 Spring Security의 `.formLogin()` 사용이 원인으로 추정되며, 추후 개선 과제로 남김.
+
+- **1차 문제: `net::ERR_CONNECTION_REFUSED`**
+  - **원인**: React 코드의 API 요청 주소가 `http://localhost:8080`으로 하드코딩되어 있었음. 쿠버네티스 환경에서는 브라우저가 백엔드 Pod로 직접 접근할 수 없으므로, 모든 요청은 프론트엔드의 `NodePort(30000)`를 통해 Nginx 프록시를 거쳐야 함.
+  - **해결**: React의 `axios` 기본 URL을 `baseURL: '/'` (상대 경로)로 수정하여 모든 API 요청이 `http://localhost:30000/api/...`로 전송되도록 변경.
+
+- **2차 문제: 코드 수정 후에도 동일한 오류 발생**
+  - **원인**: React 코드를 수정하고 프론트엔드 이미지를 다시 빌드했음에도, 쿠버네티스 Pod가 기존의 오래된 이미지를 계속 사용하고 있었음. 이미지 태그가 `:latest`로 동일하여 쿠버네티스가 변경을 감지하지 못함.
+  - **해결**: `kubectl rollout restart deployment <프론트엔드-배포-이름>` 명령어를 통해 Deployment를 강제로 재시작하여, Pod가 새로 빌드된 최신 이미지를 받아오도록 조치.
+
+- **3차 문제: `403 Forbidden`**
+  - **원인**: 네트워크 문제가 해결되자, 이번에는 백엔드의 Spring Security가 요청을 거부. CORS(Cross-Origin Resource Sharing) 정책에 `http://localhost:30000`이 허용된 출처(Origin)로 등록되어 있지 않았기 때문.
+  - **해결**: `SecurityConfig`의 `CorsConfigurationSource`에 `http://localhost:30000`을 `allowedOrigins` 목록에 추가.
+
+- **4차 문제: `401 Unauthorized`**
+  - **원인**: CORS 문제가 해결되자, 인증이 필요 없는 `/api/users/register`와 `/api/users/login` 경로에서 `401 Unauthorized` 오류 발생. 이는 `.authorizeHttpRequests`의 `permitAll()` 규칙이 적용되기 전에, SPA/REST API 아키텍처에 맞지 않는 `.formLogin()` 필터가 먼저 동작하여 인증을 요구하기 때문으로 추정.
+  - **결과**: `.formLogin()`을 제거하고 수동 로그인 API를 구현하는 방식으로 해결 방향을 잡았으나, 결국 해결은 실패하고 Pod와 Service가 정상 동작하는 단계까지를 실습의 목표까지 마무리.
+
+</details>
+
 ---
 
 ## 8. 📸 실행 화면
@@ -290,3 +327,7 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
 <img width="2000" height="1000" alt="image" src="https://github.com/user-attachments/assets/9b4588e2-9e3b-42ed-871b-c32213ce89b3" />
 
 <img width="2000" height="1000" alt="image" src="https://github.com/user-attachments/assets/dc9cb1fc-6416-43a2-8daf-40aefd56f781" />
+
+### Kubernetes 실습 결과
+
+<img width="848" height="230" alt="image" src="https://github.com/user-attachments/assets/9105bd25-df36-49b2-a64a-61d70150a548" />
