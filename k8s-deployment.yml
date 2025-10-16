@@ -1,0 +1,153 @@
+# --- Oracle Database (Local) ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle-db
+  template:
+    metadata:
+      labels:
+        app: oracle-db
+    spec:
+      containers:
+        - name: oracle-db
+          image: gvenzl/oracle-xe:21-slim-faststart
+          ports:
+            - containerPort: 1521
+          env:
+            - name: ORACLE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: db-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oracle-db-service
+spec:
+  selector:
+    app: oracle-db
+  ports:
+    - protocol: TCP
+      port: 1521
+      targetPort: 1521
+
+---
+# --- Backend (Spring Boot) ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+type: Opaque
+stringData:
+  db-password: 'your_oracle_password'
+  encryption-key: 'your_super_secret_encryption_key'
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+data:
+  DB_URL: 'jdbc:oracle:thin:@oracle-db-service:1521/XEPDB1'
+  DB_USERNAME: 'system'
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-board-backend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spring-board-backend
+  template:
+    metadata:
+      labels:
+        app: spring-board-backend
+    spec:
+      containers:
+        - name: spring-board-backend
+          image: bin778/spring-board:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: 'docker'
+            - name: DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: DB_URL
+            - name: DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: db-password
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: encryption-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-board-backend-service
+spec:
+  selector:
+    app: spring-board-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+
+---
+# --- Frontend (React + Nginx) ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-board-frontend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spring-board-frontend
+  template:
+    metadata:
+      labels:
+        app: spring-board-frontend
+    spec:
+      containers:
+        - name: spring-board-frontend
+          image: bin778/spring-board-frontend:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-board-frontend-service
+spec:
+  selector:
+    app: spring-board-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30000
+  type: NodePort
