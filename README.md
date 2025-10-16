@@ -219,6 +219,40 @@ Spring Boot와 React를 기반으로 한 풀스택 게시판 프로젝트. 기�
     ```bash
     docker run -d -p 3000:80 --name spring-board-frontend bin778/spring-board-frontend:latest
     ```
+
+### Kubernetes 실습 (로컬 환경)
+
+전체 애플리케이션 스택(DB, Backend, Frontend)을 로컬 쿠버네티스 클러스터에 배포.
+
+1.  **사전 준비**:
+    - Docker Desktop을 설치하고 `Settings > Kubernetes > Enable Kubernetes`를 활성화.
+    - 프로젝트 최상단에 모든 쿠버네티스 리소스를 정의한 `k8s-deployment.yml` 파일을 준비.
+
+2.  **로컬 이미지 빌드**:
+    - 위에서 설명한 `Backend`와 `Frontend` Docker 이미지를 미리 빌드해 둬야 함.
+
+3.  **쿠버네티스 배포**:
+    - 프로젝트 최상단에서 아래 명령어를 실행하여 모든 리소스를 클러스터에 배포.
+    ```bash
+    kubectl apply -f k8s-deployment.yml
+    ```
+
+4.  **상태 확인**:
+    - Pod와 Service가 정상적으로 실행되는지 확인.
+    ```bash
+    kubectl get pods -w
+    kubectl get services
+    ```
+
+5.  **애플리케이션 접속**:
+    - 배포가 완료되면 브라우저에서 아래 주소로 접속.
+    - **`http://localhost:30000`**
+
+6.  **리소스 정리**:
+    - 실습이 끝난 후 아래 명령어로 배포했던 모든 리소스를 삭제.
+    ```bash
+    kubectl delete -f k8s-deployment.yml
+    ```
     
 ---
 
